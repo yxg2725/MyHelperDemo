@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<litepal>
+    <!--数据库名-->
+    <dbname value="myhelper"></dbname>
+
+    <!--版本-->
+    <version value="1"></version>
+
+    <list>
+        <mapping class = "com.example.myhelper.entity.Product"/>
+        <mapping class = "com.example.myhelper.entity.Customer"/>
+        <mapping class = "com.example.myhelper.entity.MyOrder"/>
+
+    </list>
+
+</litepal>

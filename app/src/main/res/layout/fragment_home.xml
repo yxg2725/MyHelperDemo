@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:background="@color/color_write"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+
+
+        <LinearLayout
+            android:id="@+id/ll_category"
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_category_count"
+                android:text="0"
+                android:textSize="18sp"
+                android:textColor="@color/text_color1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/tv_category"
+                android:text="酵素种类"
+                android:layout_marginTop="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+
+        <View
+            android:background="@color/divide_line_gray"
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"/>
+
+
+        <LinearLayout
+            android:id="@+id/ll_count"
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_stock_count"
+                android:text="0"
+                android:textSize="18sp"
+                android:textColor="@color/text_color2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/tv_stock"
+                android:text="库存数量"
+                android:layout_marginTop="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+
+        <View
+            android:background="@color/divide_line_gray"
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"/>
+
+
+
+        <LinearLayout
+            android:id="@+id/ll_today_in"
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_today_in_count"
+                android:text="0"
+                android:textSize="18sp"
+                android:textColor="@color/text_color3"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/tv_today_in"
+                android:text="今日入库"
+                android:layout_marginTop="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+
+        <View
+            android:background="@color/divide_line_gray"
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"/>
+
+
+
+        <LinearLayout
+            android:id="@+id/ll_today_out"
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_today_out_count"
+                android:text="0"
+
+                android:textSize="18sp"
+                android:textColor="@color/text_color4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/tv_today_out"
+                android:text="今日出库"
+                android:layout_marginTop="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:paddingTop="10dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/ll_in_storage"
+            android:padding="6dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+
+            <ImageView
+                android:src="@drawable/icon_inbound"
+                android:layout_width="50dp"
+                android:layout_height="50dp" />
+
+            <TextView
+                android:text="入库"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_out_storage"
+            android:padding="6dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+
+            <ImageView
+                android:src="@drawable/icon_outbound"
+                android:layout_width="50dp"
+                android:layout_height="50dp" />
+
+            <TextView
+                android:text="出库"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+    </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_stock"
+            android:padding="6dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+
+            <ImageView
+                android:src="@drawable/icon_storage"
+                android:layout_width="50dp"
+                android:layout_height="50dp" />
+
+            <TextView
+                android:text="库存"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_record"
+            android:padding="6dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+
+            <ImageView
+                android:src="@drawable/icon_record"
+                android:layout_width="50dp"
+                android:layout_height="50dp" />
+
+            <TextView
+                android:text="记录"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+</LinearLayout>
+    </LinearLayout>
+</LinearLayout>
