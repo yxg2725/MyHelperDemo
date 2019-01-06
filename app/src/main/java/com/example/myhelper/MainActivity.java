@@ -1,21 +1,16 @@
 package com.example.myhelper;
 
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.myhelper.activity.BaseActivity;
 import com.example.myhelper.adapter.MyPagerAdapter;
-import com.example.myhelper.entity.StockFragment;
+import com.example.myhelper.fragment.StockFragment;
 import com.example.myhelper.entity.TabEntity;
-import com.example.myhelper.fragment.BaseFragment;
 import com.example.myhelper.fragment.ChartFragment;
 import com.example.myhelper.fragment.CustomerFragment;
 import com.example.myhelper.fragment.HomeFragment;
@@ -26,7 +21,6 @@ import com.flyco.tablayout.listener.OnTabSelectListener;
 import java.util.ArrayList;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class MainActivity extends BaseActivity implements SearchView.OnQueryTextListener {
 
@@ -89,7 +83,7 @@ public class MainActivity extends BaseActivity implements SearchView.OnQueryText
 
             }
         });
-
+        viewpager.setOffscreenPageLimit(3);
         viewpager.setCurrentItem(0);
     }
 
@@ -112,6 +106,10 @@ public class MainActivity extends BaseActivity implements SearchView.OnQueryText
         });
 
 
+    }
+
+    public void setCurrentItem(int postion){
+        viewpager.setCurrentItem(postion);
     }
 
 

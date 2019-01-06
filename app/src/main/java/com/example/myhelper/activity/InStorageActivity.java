@@ -1,10 +1,12 @@
 package com.example.myhelper.activity;
 
-import android.os.Bundle;
+import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.bigkoo.pickerview.builder.OptionsPickerBuilder;
@@ -17,6 +19,7 @@ import com.example.myhelper.R;
 import com.example.myhelper.adapter.OrderAdapter;
 import com.example.myhelper.entity.MyOrder;
 import com.example.myhelper.entity.Product;
+import com.example.myhelper.utils.ToastUtil;
 
 import org.litepal.LitePal;
 
@@ -29,7 +32,6 @@ import java.util.HashSet;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class InStorageActivity extends BaseActivity {
@@ -49,6 +51,10 @@ public class InStorageActivity extends BaseActivity {
     Button btnInStorage;
     @BindView(R.id.tv_total_cost)
     TextView tvTotalCost;
+    @BindView(R.id.tv_number)
+    EditText tvNumber;
+    @BindView(R.id.btn_sure)
+    Button btnSure;
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     private OrderAdapter orderAdapter;
 
@@ -57,8 +63,7 @@ public class InStorageActivity extends BaseActivity {
         return R.layout.activity_in_storage;
     }
 
-    private List<String> list1 = new ArrayList<>();
-    private List<List<Integer>> list2 = new ArrayList<>();
+    private List<String> categoryList = new ArrayList<>();
     private List<MyOrder> mList = new ArrayList<>();
 
     @Override
@@ -66,6 +71,12 @@ public class InStorageActivity extends BaseActivity {
         super.init();
         setToolbar("入库", true);
 
+        Intent intent = getIntent();
+        String categoryName = intent.getStringExtra("categoryName");
+        if (!TextUtils.isEmpty(categoryName)) {
+            //设置 分类 默认选中
+            tvCategory.setText(categoryName);
+        }
         setDatas();
     }
 
@@ -75,6 +86,9 @@ public class InStorageActivity extends BaseActivity {
         tvInTime.setText(today);
 
         prepareOptionsPickerDatas();
+        if (categoryList.size() > 0) {
+            tvCategory.setText(categoryList.get(0));
+        }
 
 
     }
@@ -82,20 +96,13 @@ public class InStorageActivity extends BaseActivity {
     private void prepareOptionsPickerDatas() {
         List<Product> products = LitePal.findAll(Product.class);
         for (Product product : products) {
-            list1.add(product.getName());
+            categoryList.add(product.getName());
         }
-        for (int i = 0; i < products.size(); i++) {
-            ArrayList<Integer> list = new ArrayList<>();
-            for (int j = 1; j < 100; j++) {
-                list.add(j);
-            }
 
-            list2.add(list);
-        }
     }
 
 
-    @OnClick({R.id.tv_in_time, R.id.tv_category, R.id.btn_in_storage})
+    @OnClick({R.id.tv_in_time, R.id.tv_category, R.id.btn_in_storage,R.id.btn_sure})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_in_time:
@@ -127,16 +134,25 @@ public class InStorageActivity extends BaseActivity {
                     @Override
                     public void onOptionsSelect(int options1, int option2, int op3, View v) {
 
-                        String productName = list1.get(options1);
-                        Integer count = list2.get(options1).get(option2);
+                        String productName = categoryList.get(options1);
                         tvCategory.setText(productName);
 
-                        updateRv(productName, count);
-                        updateBottomView();
                     }
                 }).build();
-                pvOptions.setPicker(list1, list2);
+                pvOptions.setPicker(categoryList);
                 pvOptions.show();
+                break;
+            case R.id.btn_sure:
+                String productName = tvCategory.getText().toString().trim();
+                String numStr = tvNumber.getText().toString().trim();
+                int count = Integer.valueOf(numStr);
+
+                if (TextUtils.isEmpty(productName)) {
+                    ToastUtil.showToast("请选选择入库类型");
+                    return;
+                }
+                updateRv(productName,count);
+                updateBottomView();
                 break;
             case R.id.btn_in_storage:
                 saveToOderTable();
@@ -145,8 +161,7 @@ public class InStorageActivity extends BaseActivity {
     }
 
 
-
-    private void updateRv(String name, int count) {
+    private void updateRv(String name,int count) {
         Product product = LitePal.where("name=?", name).findFirst(Product.class);
         MyOrder myOrder = new MyOrder();
         myOrder.setProductName(name);
@@ -181,7 +196,7 @@ public class InStorageActivity extends BaseActivity {
         typeCout = set.size();
         tvCategoryCount.setText(typeCout + "");
         tvTotalCount.setText(number + "");
-        tvTotalCost.setText(cost+"");
+        tvTotalCost.setText(cost + "");
     }
 
     private void saveToOderTable() {
@@ -192,11 +207,12 @@ public class InStorageActivity extends BaseActivity {
         for (int i = 0; i < mList.size(); i++) {
             MyOrder myOrder = mList.get(i);
             Product pro = LitePal.where("name=?", myOrder.getProductName()).findFirst(Product.class);
-            pro.setCount(pro.getCount()+myOrder.getNumber());
-            pro.saveOrUpdate("name=?",myOrder.getProductName());
+            pro.setCount(pro.getCount() + myOrder.getNumber());
+            pro.saveOrUpdate("name=?", myOrder.getProductName());
         }
 
         finish();
     }
+
 
 }

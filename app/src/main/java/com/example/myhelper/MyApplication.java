@@ -1,6 +1,7 @@
 package com.example.myhelper;
 
 import android.app.Application;
+import android.content.Context;
 
 import org.litepal.LitePal;
 
@@ -9,9 +10,12 @@ import org.litepal.LitePal;
  */
 
 public class MyApplication extends Application {
+    public static Context context;
     @Override
     public void onCreate() {
         super.onCreate();
         LitePal.initialize(this);
+        context = this.getApplicationContext();
+
     }
 }

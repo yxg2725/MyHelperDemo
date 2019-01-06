@@ -10,11 +10,11 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.myhelper.MainActivity;
 import com.example.myhelper.R;
 import com.example.myhelper.activity.CategoryActivity;
 import com.example.myhelper.activity.InStorageActivity;
 import com.example.myhelper.activity.OutStorageActivity;
-import com.example.myhelper.activity.StockActivity;
 import com.example.myhelper.entity.MyOrder;
 import com.example.myhelper.entity.Product;
 
@@ -66,28 +66,17 @@ public class HomeFragment extends BaseFragment {
     LinearLayout llStock;
     @BindView(R.id.ll_record)
     LinearLayout llRecord;
-    Unbinder unbinder;
 
 
 
-    @Nullable
+
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
-
-        unbinder = ButterKnife.bind(this, view);
-
-        return view;
-
+    protected int getLayoutId() {
+        return R.layout.fragment_home;
     }
 
-
-
-
     @Override
-    public void onResume() {
-        super.onResume();
+    protected void loadData() {
         //查找酵素种类
         List<Product> products = LitePal.findAll(Product.class);
         tvCategoryCount.setText(products.size()+"");
@@ -123,11 +112,6 @@ public class HomeFragment extends BaseFragment {
         tv_TodayOutCount.setText(outCount+"");
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
 
     @OnClick({R.id.ll_category, R.id.ll_count, R.id.ll_today_in, R.id.ll_today_out, R.id.ll_in_storage, R.id.ll_out_storage, R.id.ll_stock, R.id.ll_record})
     public void onViewClicked(View view) {
@@ -139,9 +123,11 @@ public class HomeFragment extends BaseFragment {
 
                 break;
             case R.id.ll_count:
-                intent = new Intent(mActivity, StockActivity.class);
-                startActivity(intent);
-
+//                intent = new Intent(mActivity, StockActivity.class);
+//                startActivity(intent);
+                //替换为库存fragment
+                MainActivity activity = (MainActivity) mActivity;
+                activity.setCurrentItem(1);
                 break;
             case R.id.ll_today_in:
                 break;

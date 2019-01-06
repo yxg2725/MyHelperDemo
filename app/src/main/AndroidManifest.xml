@@ -23,7 +23,6 @@
         <activity
             android:name=".activity.AddCategoryActivity"
             android:windowSoftInputMode="stateHidden|stateUnchanged" />
-        <activity android:name=".activity.StockActivity" />
         <activity android:name=".activity.InStorageActivity" />
         <activity android:name=".activity.OutStorageActivity" />
         <activity android:name=".activity.AddCustomerActivity"></activity>

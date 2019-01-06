@@ -53,7 +53,7 @@
 
         <TextView
             android:id="@+id/tv_customer"
-            android:text="张三"
+            android:text=""
             android:gravity="right|center"
             android:drawableRight="@drawable/arrow_right"
             android:layout_width="match_parent"
