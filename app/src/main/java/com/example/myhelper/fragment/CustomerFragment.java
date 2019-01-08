@@ -139,6 +139,7 @@ public class CustomerFragment extends BaseFragment implements SearchView.OnQuery
     }
 
 
+
     private void initMenu() {
         mSearchView.setQueryHint("查找客户");
         mSearchView.setMaxWidth(400);

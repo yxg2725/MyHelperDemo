@@ -85,7 +85,7 @@ public class OrderAdapter extends RecyclerView.Adapter {
 
         public void setData(int position) {
             MyOrder myOrder = mList.get(position);
-            tvProductName.setText(myOrder.getProductName());
+//            tvProductName.setText(myOrder.getProductName());
             tvTime.setText(myOrder.getTime());
             tvCount.setText(myOrder.getNumber()+"");
             tvTotalPrice.setText(myOrder.getTotalCost()+"");

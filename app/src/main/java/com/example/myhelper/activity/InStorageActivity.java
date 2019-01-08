@@ -1,6 +1,7 @@
 package com.example.myhelper.activity;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -16,9 +17,10 @@ import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.OptionsPickerView;
 import com.bigkoo.pickerview.view.TimePickerView;
 import com.example.myhelper.R;
-import com.example.myhelper.adapter.OrderAdapter;
+import com.example.myhelper.adapter.ProductAdapter;
 import com.example.myhelper.entity.MyOrder;
 import com.example.myhelper.entity.Product;
+import com.example.myhelper.utils.GsonUtil;
 import com.example.myhelper.utils.ToastUtil;
 
 import org.litepal.LitePal;
@@ -55,8 +57,12 @@ public class InStorageActivity extends BaseActivity {
     EditText tvNumber;
     @BindView(R.id.btn_sure)
     Button btnSure;
+    @BindView(R.id.tv_unit_price)
+    EditText tvUnitPrice;
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-    private OrderAdapter orderAdapter;
+    private int number;//订单包含多少个产品
+    private double totalCost;
+    private ProductAdapter productAdapter;
 
     @Override
     public int getLayoutId() {
@@ -64,20 +70,28 @@ public class InStorageActivity extends BaseActivity {
     }
 
     private List<String> categoryList = new ArrayList<>();
-    private List<MyOrder> mList = new ArrayList<>();
+    private List<Product> mList = new ArrayList<>();
 
     @Override
     protected void init() {
         super.init();
         setToolbar("入库", true);
 
+        setDatas();
+
         Intent intent = getIntent();
         String categoryName = intent.getStringExtra("categoryName");
         if (!TextUtils.isEmpty(categoryName)) {
             //设置 分类 默认选中
             tvCategory.setText(categoryName);
+            setTvUnitPrice(categoryName);
         }
-        setDatas();
+    }
+
+    private void setTvUnitPrice(String categoryName){
+        //设置单价
+        Product pro = LitePal.where("name=?", categoryName).findFirst(Product.class);
+        tvUnitPrice.setText(pro.getCostPrice()+"");
     }
 
     private void setDatas() {
@@ -88,6 +102,7 @@ public class InStorageActivity extends BaseActivity {
         prepareOptionsPickerDatas();
         if (categoryList.size() > 0) {
             tvCategory.setText(categoryList.get(0));
+            setTvUnitPrice(categoryList.get(0));
         }
 
 
@@ -102,7 +117,7 @@ public class InStorageActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.tv_in_time, R.id.tv_category, R.id.btn_in_storage,R.id.btn_sure})
+    @OnClick({R.id.tv_in_time, R.id.tv_category, R.id.btn_in_storage, R.id.btn_sure})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_in_time:
@@ -136,7 +151,7 @@ public class InStorageActivity extends BaseActivity {
 
                         String productName = categoryList.get(options1);
                         tvCategory.setText(productName);
-
+                        setTvUnitPrice(productName);
                     }
                 }).build();
                 pvOptions.setPicker(categoryList);
@@ -151,7 +166,7 @@ public class InStorageActivity extends BaseActivity {
                     ToastUtil.showToast("请选选择入库类型");
                     return;
                 }
-                updateRv(productName,count);
+                updateRv(productName, count);
                 updateBottomView();
                 break;
             case R.id.btn_in_storage:
@@ -161,55 +176,65 @@ public class InStorageActivity extends BaseActivity {
     }
 
 
-    private void updateRv(String name,int count) {
+    private void updateRv(String name, int count) {
         Product product = LitePal.where("name=?", name).findFirst(Product.class);
-        MyOrder myOrder = new MyOrder();
-        myOrder.setProductName(name);
-        myOrder.setNumber(count);
-        myOrder.setState(1);//入库
-        myOrder.setTime(tvInTime.getText().toString());
-        myOrder.setTotalCost(count * product.getCostPrice());
-        mList.add(myOrder);
+        product.setCount(count);
+        String unitPriceStr = tvUnitPrice.getText().toString().trim();
+        product.setCostPrice(Double.valueOf(unitPriceStr));
+        mList.add(product);
 
 
-        if (orderAdapter == null) {
+        if (productAdapter == null) {
             rv.setLayoutManager(new LinearLayoutManager(this));
-            orderAdapter = new OrderAdapter(this);
-            rv.setAdapter(orderAdapter);
+            productAdapter = new ProductAdapter(this);
+            rv.setAdapter(productAdapter);
         }
-        orderAdapter.setData(mList);
+        productAdapter.setDatas(mList);
 
     }
 
     private void updateBottomView() {
         int typeCout = 0;
-        int number = 0;
-        double cost = 0;
+        number = 0;
+        totalCost = 0;
         HashSet<String> set = new HashSet<>();
 
         for (int i = 0; i < mList.size(); i++) {
-            MyOrder myOrder = mList.get(i);
-            set.add(myOrder.getProductName());
-            number = number + myOrder.getNumber();
-            cost = cost + myOrder.getTotalCost();
+            Product product = mList.get(i);
+            set.add(product.getName());
+            number = number + product.getCount();
+            totalCost = totalCost + product.getCostPrice()*product.getCount();
         }
         typeCout = set.size();
         tvCategoryCount.setText(typeCout + "");
         tvTotalCount.setText(number + "");
-        tvTotalCost.setText(cost + "");
+        tvTotalCost.setText(totalCost + "");
     }
 
     private void saveToOderTable() {
-        //存入order 表
-        LitePal.saveAll(mList);
 
+        String productJson = GsonUtil.toJson(mList);
+        MyOrder myOrder = new MyOrder();
+        myOrder.setProductDetail(productJson);
+        myOrder.setNumber(number);//产品个数
+        myOrder.setState(1);//入库
+        myOrder.setTime(tvInTime.getText().toString());
+        myOrder.setTotalCost(totalCost);
+
+
+        SQLiteDatabase database = LitePal.getDatabase();
+        database.beginTransaction();
         //存入product表 更新库存数量
         for (int i = 0; i < mList.size(); i++) {
-            MyOrder myOrder = mList.get(i);
-            Product pro = LitePal.where("name=?", myOrder.getProductName()).findFirst(Product.class);
-            pro.setCount(pro.getCount() + myOrder.getNumber());
-            pro.saveOrUpdate("name=?", myOrder.getProductName());
+            Product product = mList.get(i);
+            Product pro = LitePal.where("name=?", product.getName()).findFirst(Product.class);
+            pro.setCount(pro.getCount() + product.getCount());
+            pro.saveOrUpdate("name=?", product.getName());
         }
+        myOrder.save();
+        database.setTransactionSuccessful();
+        database.endTransaction();
+
 
         finish();
     }

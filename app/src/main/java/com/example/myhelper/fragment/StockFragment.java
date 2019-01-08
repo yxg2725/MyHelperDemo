@@ -3,6 +3,7 @@ package com.example.myhelper.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.myhelper.MainActivity;
 import com.example.myhelper.R;
 import com.example.myhelper.activity.InStorageActivity;
 import com.example.myhelper.activity.OutStorageActivity;
@@ -41,6 +43,7 @@ public class StockFragment extends BaseFragment {
     Button btnInStorage;
     private StockAdapter stockAdapter;
     private List<Product> products;
+
 
 
     @Override

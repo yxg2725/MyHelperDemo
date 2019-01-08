@@ -7,7 +7,7 @@ import org.litepal.crud.LitePalSupport;
  */
 
 public class MyOrder extends LitePalSupport {
-    private String productName;
+    private String productDetail;//所有产品信息
     private String customerName;
     private int number;
     private String time;
@@ -26,13 +26,12 @@ public class MyOrder extends LitePalSupport {
         this.totalCost = totalCost;
     }
 
-    public String getProductName() {
-        return productName;
-
+    public String getProductDetail() {
+        return productDetail;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
+    public void setProductDetail(String productDetail) {
+        this.productDetail = productDetail;
     }
 
     public String getCustomerName() {

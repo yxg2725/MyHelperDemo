@@ -11,6 +11,8 @@ import org.json.JSONObject;
 
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
+
 
 /**
  * 解析Json的封装
@@ -26,7 +28,7 @@ public class GsonUtil {
 	 * @param cls
 	 * @return
 	 */
-	/*public static <T> T parseJsonToBean(String json, Class<T> cls) {
+	public static <T> T parseJsonToBean(String json, Class<T> cls) {
 		Gson gson = new Gson();
 		T t = null;
 		try {
@@ -35,7 +37,7 @@ public class GsonUtil {
 			e.printStackTrace();
 		}
 		return t;
-	}*/
+	}
 
 
 	/**
@@ -46,7 +48,7 @@ public class GsonUtil {
 	 * @param type  new TypeToken<List<yourbean>>(){}.getType()
 	 * @return
 	 */
-	/*public static List<?> parseJsonToList(String json, Type type) {
+	public static List<?> parseJsonToList(String json, Type type) {
 		Gson gson = new Gson();
 		List<?> list = gson.fromJson(json, type);
 		return list;
@@ -61,6 +63,6 @@ public class GsonUtil {
 	public static String toJson(Object obj){
 		if(obj==null)return "";
 		return new Gson().toJson(obj);
-	}*/
+	}
 
 }

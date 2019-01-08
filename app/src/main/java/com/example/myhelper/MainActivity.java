@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 
-public class MainActivity extends BaseActivity implements SearchView.OnQueryTextListener {
+public class MainActivity extends BaseActivity {
 
     @BindView(R.id.viewpager)
     ViewPager viewpager;
@@ -31,6 +31,7 @@ public class MainActivity extends BaseActivity implements SearchView.OnQueryText
     private SearchView mSearchView;
 
     private String[] mTitles = {"首页", "库存", "客户", "报表"};
+    private String[] toolbarTitles = {"我的助手", "库存管理", "我的客户", "报表统计"};
     private int[] mIconUnselectIds = {
             R.mipmap.tab_home_unselect, R.mipmap.tab_speech_unselect,
             R.mipmap.tab_contact_unselect, R.mipmap.tab_more_unselect};
@@ -52,7 +53,7 @@ public class MainActivity extends BaseActivity implements SearchView.OnQueryText
     protected void init() {
         super.init();
 
-        setToolbar("",false);
+        setToolbar("我的助手",false);
         initTablayout();
         initViewPager();
     }
@@ -76,6 +77,7 @@ public class MainActivity extends BaseActivity implements SearchView.OnQueryText
             @Override
             public void onPageSelected(int position) {
                 tablayout.setCurrentTab(position);
+                toolbar.setTitle(toolbarTitles[position]);
             }
 
             @Override
@@ -113,33 +115,5 @@ public class MainActivity extends BaseActivity implements SearchView.OnQueryText
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        MenuItem searchItem = menu.findItem(R.id.menu_search);
-        //通过MenuItem得到SearchView
-        mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 
-        initMenu();
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    private void initMenu() {
-        mSearchView.setQueryHint("查找酵素");
-        mSearchView.setIconifiedByDefault(false);
-        mSearchView.setSubmitButtonEnabled(true);
-        mSearchView.setFocusableInTouchMode(true);
-        mSearchView.setOnQueryTextListener(this);
-    }
-
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        return false;
-    }
 }

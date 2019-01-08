@@ -9,11 +9,12 @@ import com.example.myhelper.R;
 public class ChartFragment extends BaseFragment {
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_stock;
+        return R.layout.fragment_chart;
     }
 
     @Override
     protected void loadData() {
 
     }
+
 }

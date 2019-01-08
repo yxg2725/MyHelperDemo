@@ -15,6 +15,7 @@ import com.example.myhelper.R;
 import com.example.myhelper.activity.CategoryActivity;
 import com.example.myhelper.activity.InStorageActivity;
 import com.example.myhelper.activity.OutStorageActivity;
+import com.example.myhelper.activity.RecordActivity;
 import com.example.myhelper.entity.MyOrder;
 import com.example.myhelper.entity.Product;
 
@@ -69,11 +70,13 @@ public class HomeFragment extends BaseFragment {
 
 
 
-
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_home;
     }
+
+
+
 
     @Override
     protected void loadData() {
@@ -130,8 +133,14 @@ public class HomeFragment extends BaseFragment {
                 activity.setCurrentItem(1);
                 break;
             case R.id.ll_today_in:
+                intent = new Intent(mActivity, RecordActivity.class);
+                intent.putExtra("position",2);
+                startActivity(intent);
                 break;
             case R.id.ll_today_out:
+                intent = new Intent(mActivity, RecordActivity.class);
+                intent.putExtra("position",1);
+                startActivity(intent);
                 break;
             case R.id.ll_in_storage:
                 intent = new Intent(mActivity, InStorageActivity.class);
@@ -143,7 +152,9 @@ public class HomeFragment extends BaseFragment {
                 break;
             case R.id.ll_stock:
                 break;
-            case R.id.ll_record:
+            case R.id.ll_record://出入库记录
+                intent = new Intent(mActivity, RecordActivity.class);
+                startActivity(intent);
                 break;
         }
     }

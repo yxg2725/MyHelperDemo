@@ -114,9 +114,13 @@
             android:gravity="right|center_vertical"
             android:id="@+id/tv_agent_level"
             android:inputType="number"
-            android:drawableRight="@drawable/arrow_right"
-            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_width="0dp"
             android:layout_height="wrap_content" />
+        <ImageView
+            android:src="@drawable/arrow_right"
+            android:layout_width="24dp"
+            android:layout_height="24dp" />
 
     </LinearLayout>
 </LinearLayout>

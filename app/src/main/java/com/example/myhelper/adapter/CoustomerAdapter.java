@@ -1,13 +1,18 @@
 package com.example.myhelper.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.myhelper.R;
+import com.example.myhelper.activity.AddCategoryActivity;
+import com.example.myhelper.activity.AddCustomerActivity;
 import com.example.myhelper.entity.ContactInfo;
 
 import java.util.ArrayList;
@@ -39,9 +44,19 @@ public class CoustomerAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         ContactHolder viewHolder = (ContactHolder) holder;
         viewHolder.setData(position);
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               Intent intent =  new Intent(mActivity, AddCustomerActivity.class);
+                ContactInfo contactInfo = mList.get(position);
+                intent.putExtra("customer_name",contactInfo.getName());
+               mActivity.startActivity(intent);
+
+            }
+        });
     }
 
     @Override

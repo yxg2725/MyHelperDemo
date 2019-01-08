@@ -12,6 +12,7 @@
         android:theme="@style/AppTheme.NoActionBar2">
         <activity
             android:name=".MainActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:windowSoftInputMode="stateHidden|stateUnchanged">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,13 +20,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.CategoryActivity" />
+        <activity android:name=".activity.CategoryActivity" android:configChanges="keyboardHidden|orientation|screenSize"/>
         <activity
             android:name=".activity.AddCategoryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:windowSoftInputMode="stateHidden|stateUnchanged" />
-        <activity android:name=".activity.InStorageActivity" />
-        <activity android:name=".activity.OutStorageActivity" />
-        <activity android:name=".activity.AddCustomerActivity"></activity>
+        <activity android:name=".activity.InStorageActivity" android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity android:name=".activity.OutStorageActivity" android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity android:name=".activity.AddCustomerActivity" android:configChanges="keyboardHidden|orientation|screenSize"/>
+        <activity android:name=".activity.RecordActivity" android:configChanges="keyboardHidden|orientation|screenSize"></activity>
     </application>
 
 </manifest>

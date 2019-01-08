@@ -1,5 +1,6 @@
 package com.example.myhelper.entity;
 
+import org.litepal.annotation.Column;
 import org.litepal.crud.LitePalSupport;
 
 /**
@@ -7,6 +8,7 @@ import org.litepal.crud.LitePalSupport;
  */
 
 public class Customer extends LitePalSupport {
+    @Column(unique = true)
     private String name;
     private String wx;
     private String phone;

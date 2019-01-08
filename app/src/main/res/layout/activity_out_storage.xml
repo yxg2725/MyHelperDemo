@@ -31,9 +31,13 @@
             android:hint="2018-01-01"
             android:inputType="number"
             android:gravity="right|center"
-            android:drawableRight="@drawable/arrow_right"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content" />
+        <ImageView
+            android:src="@drawable/arrow_right"
+            android:layout_width="24dp"
+            android:layout_height="24dp" />
 
     </LinearLayout>
     <include layout="@layout/horizontal_divide_line"></include>
@@ -55,9 +59,14 @@
             android:id="@+id/tv_customer"
             android:text=""
             android:gravity="right|center"
-            android:drawableRight="@drawable/arrow_right"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content" />
+
+        <ImageView
+            android:src="@drawable/arrow_right"
+            android:layout_width="24dp"
+            android:layout_height="24dp" />
 
     </LinearLayout>
 
@@ -82,9 +91,14 @@
             android:id="@+id/tv_category_name"
             android:text="综合酵素"
             android:gravity="right|center"
-            android:drawableRight="@drawable/arrow_right"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content" />
+
+        <ImageView
+            android:src="@drawable/arrow_right"
+            android:layout_width="24dp"
+            android:layout_height="24dp" />
 
     </LinearLayout>
 
@@ -131,7 +145,7 @@
             android:layout_width="50dp"
             android:layout_height="wrap_content" />
 
-
+<!--
         <TextView
             android:text="总价："
             android:layout_width="wrap_content"
@@ -145,7 +159,7 @@
             android:textSize="14sp"
             android:inputType="number"
             android:layout_width="50dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content" />-->
 
         <View
             android:layout_weight="1"

@@ -6,6 +6,7 @@
 
     <!-- light blue-->
     <color name="divide_line_gray">#cccccc</color>
+    <color name="divide_line_gray2">#faf9f9</color>
     <color name="color_write">#ffffff</color>
     <color name="color_black">#000000</color>
     <color name="text_color1">#cc3366</color>

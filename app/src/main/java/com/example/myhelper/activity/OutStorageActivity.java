@@ -2,16 +2,14 @@ package com.example.myhelper.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bigkoo.pickerview.builder.OptionsPickerBuilder;
 import com.bigkoo.pickerview.builder.TimePickerBuilder;
@@ -20,11 +18,12 @@ import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.OptionsPickerView;
 import com.bigkoo.pickerview.view.TimePickerView;
 import com.example.myhelper.R;
-import com.example.myhelper.adapter.OrderAdapter;
+import com.example.myhelper.adapter.ProductAdapter;
 import com.example.myhelper.entity.Customer;
 import com.example.myhelper.entity.MyOrder;
 import com.example.myhelper.entity.Product;
 import com.example.myhelper.utils.DialogUtil;
+import com.example.myhelper.utils.GsonUtil;
 import com.example.myhelper.utils.ToastUtil;
 
 import org.litepal.LitePal;
@@ -33,7 +32,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -65,8 +63,8 @@ public class OutStorageActivity extends BaseActivity{
     EditText tvNumber;
     @BindView(R.id.tv_unit_price)
     EditText tvUnitPrice;
-    @BindView(R.id.tv_unit_total_price)
-    EditText tvUnitTotalPrice;
+//    @BindView(R.id.tv_unit_total_price)
+//    EditText tvUnitTotalPrice;
     @BindView(R.id.btn_sure)
     Button btnSure;
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -74,9 +72,11 @@ public class OutStorageActivity extends BaseActivity{
 
     private List<String> categorylist = new ArrayList<>();
     private List<String> customerlist = new ArrayList<>();
-    private List<MyOrder> mList = new ArrayList<>();
-    private OrderAdapter orderAdapter;
+    private List<Product> mList = new ArrayList<>();
+    private ProductAdapter productAdapter;
     private String productName;
+    private double totalPrice;
+    private int number;
 
     @Override
     public int getLayoutId() {
@@ -89,52 +89,7 @@ public class OutStorageActivity extends BaseActivity{
         setToolbar("出库", true);
         setDatas();
 
-        tvNumber.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!TextUtils.isEmpty(s)) {
-                    Integer number = Integer.valueOf(s.toString());
-                    String unitPriceStr = tvUnitPrice.getText().toString().trim();
-                    Integer unitPrice = Integer.valueOf(unitPriceStr);
-                    tvUnitTotalPrice.setText(number*unitPrice+"");
-                }
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-        tvUnitPrice.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int i, int i1, int i2) {
-                if (!TextUtils.isEmpty(s)) {
-                    Integer unitPriceStr = Integer.valueOf(s.toString());
-                    Integer unitPrice = Integer.valueOf(unitPriceStr);
-                    String num = tvNumber.getText().toString().trim();
-                    Integer number = Integer.valueOf(num);
-
-                    tvUnitTotalPrice.setText(number*unitPrice+"");
-                }
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
 
     }
 
@@ -144,6 +99,7 @@ public class OutStorageActivity extends BaseActivity{
         tvOutTime.setText(today);
 
         prepareOptionsPickerDatas();
+
 
 
     }
@@ -156,6 +112,10 @@ public class OutStorageActivity extends BaseActivity{
         }
         for (Customer customer:customers){
             customerlist.add(customer.getName());
+        }
+
+        if (categorylist.size() > 0) {
+            tvCategoryName.setText(categorylist.get(0));
         }
 
     }
@@ -187,7 +147,7 @@ public class OutStorageActivity extends BaseActivity{
                 pvTime.show();
                 break;
             case R.id.tv_category_name:
-                //条件选择器
+                //选择产品
                 OptionsPickerView pvOptions = new OptionsPickerBuilder(this, new OnOptionsSelectListener() {
 
                     @Override
@@ -203,7 +163,7 @@ public class OutStorageActivity extends BaseActivity{
                 pvOptions.show();
                 break;
             case R.id.tv_customer:
-                //条件选择器
+                //选择客户
                 OptionsPickerView customerOptions = new OptionsPickerBuilder(this, new OnOptionsSelectListener() {
 
                     @Override
@@ -217,6 +177,7 @@ public class OutStorageActivity extends BaseActivity{
                 }).build();
                 customerOptions.setPicker(customerlist);
                 customerOptions.show();
+
                 break;
             case R.id.btn_sure:
 
@@ -224,8 +185,8 @@ public class OutStorageActivity extends BaseActivity{
                 productName = tvCategoryName.getText().toString().trim();
                 String numStr = tvNumber.getText().toString().trim();
                 Integer count = Integer.valueOf(numStr);
-                String unitTotalPriceStr = tvUnitTotalPrice.getText().toString().trim();
-                Integer unitotalPrice = Integer.valueOf(unitTotalPriceStr);
+//                String unitTotalPriceStr = tvUnitTotalPrice.getText().toString().trim();
+//                Integer unitotalPrice = Integer.valueOf(unitTotalPriceStr);
                 String customer = tvCustomer.getText().toString();
                 Product product = LitePal.where("name=?", productName).findFirst(Product.class);
                 if (TextUtils.isEmpty(customer)) {
@@ -237,7 +198,7 @@ public class OutStorageActivity extends BaseActivity{
                     return;
                 }
 
-                updateRv(productName, count,unitotalPrice);
+                updateRv(productName, count);
                 updateBottomView();
                 break;
             case R.id.btn_out:
@@ -246,58 +207,74 @@ public class OutStorageActivity extends BaseActivity{
         }
     }
 
-    private void updateRv(String name, Integer count,Integer unitotalPrice) {
+    private void updateRv(String name, Integer count) {
         Product product = LitePal.where("name=?", name).findFirst(Product.class);
-        MyOrder myOrder = new MyOrder();
-        myOrder.setProductName(name);
-        myOrder.setNumber(count);
-        myOrder.setState(0);//出库
-        myOrder.setTime(tvOutTime.getText().toString());
-        myOrder.setCustomerName(tvCustomer.getText().toString());//客户
-        myOrder.setTotalCost(count * product.getCostPrice());//总成本
-        myOrder.setTotalPrice(unitotalPrice);//总收入
-        mList.add(myOrder);
+        product.setCount(count);
+
+        String retailPriceStr = tvUnitPrice.getText().toString().trim();
+
+        product.setRetailPrice(Double.valueOf(retailPriceStr));
+        product.setCostPrice(Double.valueOf(retailPriceStr));
+        mList.add(product);
 
 
-        if (orderAdapter == null) {
+        if (productAdapter == null) {
             rv.setLayoutManager(new LinearLayoutManager(this));
-            orderAdapter = new OrderAdapter(this);
-            rv.setAdapter(orderAdapter);
+            productAdapter = new ProductAdapter(this);
+            rv.setAdapter(productAdapter);
         }
-        orderAdapter.setData(mList);
+        productAdapter.setDatas(mList);
     }
 
     private void updateBottomView() {
         int typeCout = 0;
-        int number = 0;
+        number = 0;
         double cost = 0;
-        double totalPrice = 0;
+        totalPrice = 0;
         HashSet<String> set = new HashSet<>();
 
         for (int i = 0; i < mList.size(); i++) {
-            MyOrder myOrder = mList.get(i);
-            set.add(myOrder.getProductName());
-            number = number + myOrder.getNumber();
-            cost = cost + myOrder.getTotalCost();
-            totalPrice = totalPrice+ myOrder.getTotalPrice();
+            Product product = mList.get(i);
+            set.add(product.getName());
+            number = number + product.getCount();
+//            cost = cost + product.getTotalCost();
+            totalPrice = totalPrice + product.getCount()*product.getRetailPrice();
         }
         typeCout = set.size();
         tvCategoryCount.setText(typeCout + "");
         tvTotalCount.setText(number + "");
-        tvTotalPrice.setText(totalPrice+"");
+        tvTotalPrice.setText(totalPrice +"");
     }
 
     private void saveToOderTable() {
-        //存入order 表
-        LitePal.saveAll(mList);
+        String productJson = GsonUtil.toJson(mList);
+        MyOrder myOrder = new MyOrder();
+        myOrder.setProductDetail(productJson);
+        myOrder.setNumber(number);
+        myOrder.setState(0);//出库
+        myOrder.setTime(tvOutTime.getText().toString());
+        myOrder.setCustomerName(tvCustomer.getText().toString());//客户
+//        myOrder.setTotalCost(count * product.getCostPrice());//总成本
+        myOrder.setTotalPrice(totalPrice);//总收入
+
+
+
+
+        SQLiteDatabase database = LitePal.getDatabase();
+        database.beginTransaction();
 
         //存入product表 更新库存数量
         for (int i = 0; i < mList.size(); i++) {
-            MyOrder myOrder = mList.get(i);
-            Product pro = LitePal.where("name=?", myOrder.getProductName()).findFirst(Product.class);
-            pro.setCount(pro.getCount() - myOrder.getNumber());
-            pro.saveOrUpdate("name=?", myOrder.getProductName());
+            Product product = mList.get(i);
+            Product pro = LitePal.where("name=?", product.getName()).findFirst(Product.class);
+            pro.setCount(pro.getCount() - product.getCount());
+            pro.saveOrUpdate("name=?", product.getName());
         }
+        myOrder.save();
+
+        database.setTransactionSuccessful();
+        database.endTransaction();
+
 
         finish();
     }

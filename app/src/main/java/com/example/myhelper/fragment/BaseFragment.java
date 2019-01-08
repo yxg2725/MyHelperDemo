@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.myhelper.MainActivity;
+
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
@@ -20,7 +22,7 @@ import butterknife.Unbinder;
 
 public abstract class BaseFragment extends Fragment {
 
-    protected FragmentActivity mActivity;
+    protected MainActivity mActivity;
     private static final String TAG = "BaseFragment";
     private boolean isViewCreated;
     private boolean isUIVisible;
@@ -30,7 +32,7 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mActivity = getActivity();
+        mActivity = (MainActivity) getActivity();
         Log.i(TAG, "onCreate: " + this.getClass().getName());
     }
 
