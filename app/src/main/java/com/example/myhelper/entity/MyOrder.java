@@ -2,21 +2,45 @@ package com.example.myhelper.entity;
 
 import org.litepal.crud.LitePalSupport;
 
+import java.io.Serializable;
+
 /**
  * Created by Administrator on 2019/1/4.
  */
 
-public class MyOrder extends LitePalSupport {
+public class MyOrder extends LitePalSupport implements Serializable{
     private String productDetail;//所有产品信息
     private String customerName;
     private int number;
     private String time;
     private double totalCost;
-    private double totalPrice;
+    private double totalPrice;//当前订单总金额
     private String orderNo;
-    private int payState;//订单状态
+    private int orderState;//订单状态   0表示已完成  1表示未支付  2表示未全部发货
     private String sendState;//发货状态
+    private double actualPayment;//实际支付总金额
     private int state;//出库0 入库1
+
+
+
+    public double getActualPayment() {
+        return actualPayment;
+    }
+
+    public void setActualPayment(double actualPayment) {
+        this.actualPayment = actualPayment;
+    }
+
+    public int getOrderState() {
+
+        return orderState;
+    }
+
+    public void setOrderState(int orderState) {
+        this.orderState = orderState;
+    }
+
+
 
     public double getTotalCost() {
         return totalCost;
@@ -58,13 +82,6 @@ public class MyOrder extends LitePalSupport {
         this.orderNo = orderNo;
     }
 
-    public int getPayState() {
-        return payState;
-    }
-
-    public void setPayState(int payState) {
-        this.payState = payState;
-    }
 
     public String getSendState() {
         return sendState;

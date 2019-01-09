@@ -34,4 +34,6 @@ dependencies {
     implementation 'com.contrarywind:Android-PickerView:4.1.6'
     implementation files('libs/pinyin4j-2.5.0.jar')
     implementation 'com.google.code.gson:gson:2.2.4'
+
+    compile 'org.greenrobot:eventbus:3.0.0'
 }

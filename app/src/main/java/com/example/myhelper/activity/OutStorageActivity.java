@@ -3,6 +3,7 @@ package com.example.myhelper.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -22,10 +23,14 @@ import com.example.myhelper.adapter.ProductAdapter;
 import com.example.myhelper.entity.Customer;
 import com.example.myhelper.entity.MyOrder;
 import com.example.myhelper.entity.Product;
+import com.example.myhelper.event.MessageEvent;
 import com.example.myhelper.utils.DialogUtil;
 import com.example.myhelper.utils.GsonUtil;
 import com.example.myhelper.utils.ToastUtil;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.litepal.LitePal;
 
 import java.text.ParseException;
@@ -56,7 +61,7 @@ public class OutStorageActivity extends BaseActivity{
     @BindView(R.id.tv_total_count)
     TextView tvTotalCount;
     @BindView(R.id.tv_total_price)
-    TextView tvTotalPrice;
+    EditText tvTotalPrice;
     @BindView(R.id.btn_out)
     Button btnOut;
     @BindView(R.id.tv_number)
@@ -72,7 +77,7 @@ public class OutStorageActivity extends BaseActivity{
 
     private List<String> categorylist = new ArrayList<>();
     private List<String> customerlist = new ArrayList<>();
-    private List<Product> mList = new ArrayList<>();
+    private ArrayList<Product> mList = new ArrayList<>();
     private ProductAdapter productAdapter;
     private String productName;
     private double totalPrice;
@@ -86,6 +91,8 @@ public class OutStorageActivity extends BaseActivity{
     @Override
     protected void init() {
         super.init();
+        EventBus.getDefault().register(this);
+
         setToolbar("出库", true);
         setDatas();
 
@@ -181,19 +188,14 @@ public class OutStorageActivity extends BaseActivity{
                 break;
             case R.id.btn_sure:
 
+                if(!checkoutSelectedCustomer())return;
+
                 //检查库存量够不够
                 productName = tvCategoryName.getText().toString().trim();
                 String numStr = tvNumber.getText().toString().trim();
                 Integer count = Integer.valueOf(numStr);
-//                String unitTotalPriceStr = tvUnitTotalPrice.getText().toString().trim();
-//                Integer unitotalPrice = Integer.valueOf(unitTotalPriceStr);
-                String customer = tvCustomer.getText().toString();
-                Product product = LitePal.where("name=?", productName).findFirst(Product.class);
-                if (TextUtils.isEmpty(customer)) {
-                    ToastUtil.showToast("请选择客户");
-                    return;
-                }
-                if (product.getCount()< count) {
+
+                if (!checkStorage(productName,count)) {
                     DialogUtil.showConfirmDialog(this,"confirm","提示","库存不足，请先入库！",new DialogConfirmClickListener());
                     return;
                 }
@@ -202,15 +204,83 @@ public class OutStorageActivity extends BaseActivity{
                 updateBottomView();
                 break;
             case R.id.btn_out:
-                saveToOderTable();
+                if(!checkCanOut())return;
+
+                String[] items = {"已付款","未付款"};
+                DialogUtil.showSingleChoiceDialog(this, "single", "是否付款", items, 0, new DialogUtil.OnSingleConfirmListener() {
+                    @Override
+                    public void onSingleDialogConfirm(int which) {
+                        MyOrder order = createOrder(which);
+                        //跳转到账单详情界面
+                        Intent intent = new Intent(OutStorageActivity.this,OrderDetailActivity.class);
+//                        intent.putExtra("payState",which);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("order",order);
+//                        bundle.putSerializable("product",mList);
+                        bundle.putString("from","OutStorageActivity");
+                        bundle.putInt("payState",which);
+                        intent.putExtras(bundle);
+//                        intent.putExtra("from","OutStorageActivity");
+                        startActivity(intent);
+                    }
+                });
                 break;
         }
+    }
+
+    private MyOrder createOrder(int which) {
+        String productJson = GsonUtil.toJson(mList);
+        MyOrder myOrder = new MyOrder();
+        myOrder.setProductDetail(productJson);
+        myOrder.setNumber(number);
+        myOrder.setState(0);//出库
+        myOrder.setTime(tvOutTime.getText().toString());
+        myOrder.setCustomerName(tvCustomer.getText().toString());//客户
+//        myOrder.setTotalCost(count * product.getCostPrice());//总成本
+        myOrder.setTotalPrice(totalPrice);//总收入
+        Double actualPrice = Double.valueOf(tvTotalPrice.getText().toString());
+        myOrder.setActualPayment(actualPrice);//实际支付的金额
+        return myOrder;
+    }
+
+    /**
+     * 检查库存是否足够
+     * @param productName
+     * @param count
+     * @return
+     */
+    private boolean checkStorage(String productName,int count){
+        Product product = LitePal.where("name=?", productName).findFirst(Product.class);
+        if(product.getCount()< count){
+            return false;
+        }
+        return true;
+    }
+
+    private boolean checkCanOut() {
+        //是否选中了客户
+       if (!checkoutSelectedCustomer())return false;
+
+        //是否选中了产品
+        if (mList.isEmpty()){
+            ToastUtil.showToast("请选择产品！");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean checkoutSelectedCustomer(){
+        if (TextUtils.isEmpty(tvCustomer.getText().toString())){
+            ToastUtil.showToast("请选择客户！");
+            return false;
+        }
+        return true;
     }
 
     private void updateRv(String name, Integer count) {
         Product product = LitePal.where("name=?", name).findFirst(Product.class);
         product.setCount(count);
-
+        product.setDate(tvOutTime.getText().toString());
         String retailPriceStr = tvUnitPrice.getText().toString().trim();
 
         product.setRetailPrice(Double.valueOf(retailPriceStr));
@@ -246,16 +316,8 @@ public class OutStorageActivity extends BaseActivity{
         tvTotalPrice.setText(totalPrice +"");
     }
 
-    private void saveToOderTable() {
-        String productJson = GsonUtil.toJson(mList);
-        MyOrder myOrder = new MyOrder();
-        myOrder.setProductDetail(productJson);
-        myOrder.setNumber(number);
-        myOrder.setState(0);//出库
-        myOrder.setTime(tvOutTime.getText().toString());
-        myOrder.setCustomerName(tvCustomer.getText().toString());//客户
-//        myOrder.setTotalCost(count * product.getCostPrice());//总成本
-        myOrder.setTotalPrice(totalPrice);//总收入
+    /*private void saveToOderTable() {
+
 
 
 
@@ -270,14 +332,14 @@ public class OutStorageActivity extends BaseActivity{
             pro.setCount(pro.getCount() - product.getCount());
             pro.saveOrUpdate("name=?", product.getName());
         }
-        myOrder.save();
+//        myOrder.save();
 
         database.setTransactionSuccessful();
         database.endTransaction();
 
 
         finish();
-    }
+    }*/
 
 
     public class DialogConfirmClickListener implements DialogInterface.OnClickListener {
@@ -287,6 +349,22 @@ public class OutStorageActivity extends BaseActivity{
             Intent intent = new Intent(OutStorageActivity.this, InStorageActivity.class);
             intent.putExtra("categoryName",productName);
             startActivity(intent);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void Event(MessageEvent messageEvent) {
+        if (messageEvent.getMessage().equals("finish")){
+            finish();
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
         }
     }
 

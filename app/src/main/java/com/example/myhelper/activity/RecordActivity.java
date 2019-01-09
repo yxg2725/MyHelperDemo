@@ -20,6 +20,7 @@ import com.flyco.tablayout.listener.OnTabSelectListener;
 import org.litepal.LitePal;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -89,6 +90,7 @@ public class RecordActivity extends BaseActivity implements SearchView.OnQueryTe
 
         }
 
+        Collections.reverse(orderList);
         notifyData();
     }
 

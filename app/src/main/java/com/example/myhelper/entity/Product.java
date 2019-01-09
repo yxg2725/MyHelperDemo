@@ -22,6 +22,15 @@ public class Product extends LitePalSupport implements Serializable {
     private String effect;//功效
     private String photoPath;//图片路径
     private int count;//库存数量
+    private String date;//出入库日期
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 
     public int getCount() {
         return count;

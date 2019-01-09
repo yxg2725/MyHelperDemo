@@ -102,7 +102,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
-    <View
+   <!-- <View
         android:layerType="software"
         android:layout_width="match_parent"
         android:layout_height="3dp"
@@ -119,12 +119,12 @@
             android:layout_width="30dp"
             android:layout_height="20dp" />
 
-    </FrameLayout>
+    </FrameLayout>-->
 
-    <android.support.v7.widget.RecyclerView
+   <!-- <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_product_detail"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </android.support.v7.widget.RecyclerView>
+    </android.support.v7.widget.RecyclerView>-->
 </LinearLayout>

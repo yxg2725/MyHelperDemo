@@ -2,6 +2,7 @@ package com.example.myhelper.activity;
 
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -20,9 +21,13 @@ import com.example.myhelper.R;
 import com.example.myhelper.adapter.ProductAdapter;
 import com.example.myhelper.entity.MyOrder;
 import com.example.myhelper.entity.Product;
+import com.example.myhelper.event.MessageEvent;
 import com.example.myhelper.utils.GsonUtil;
 import com.example.myhelper.utils.ToastUtil;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.litepal.LitePal;
 
 import java.text.ParseException;
@@ -75,6 +80,9 @@ public class InStorageActivity extends BaseActivity {
     @Override
     protected void init() {
         super.init();
+        EventBus.getDefault().register(this);
+
+
         setToolbar("入库", true);
 
         setDatas();
@@ -170,9 +178,34 @@ public class InStorageActivity extends BaseActivity {
                 updateBottomView();
                 break;
             case R.id.btn_in_storage:
-                saveToOderTable();
+                //生成order数据
+                MyOrder order = createOrder();
+                //跳转到核对订单界面
+                //跳转到账单详情界面
+                Intent intent = new Intent(InStorageActivity.this,OrderDetailActivity.class);
+//                intent.putExtra("payState",which);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("order",order);
+//                        bundle.putSerializable("product",mList);
+                intent.putExtras(bundle);
+                bundle.putString("from","InStorageActivity");
+                startActivity(intent);
+
+//                saveToOderTable();
                 break;
         }
+    }
+
+    private MyOrder createOrder() {
+        String productJson = GsonUtil.toJson(mList);
+        MyOrder myOrder = new MyOrder();
+        myOrder.setProductDetail(productJson);
+        myOrder.setNumber(number);//产品个数
+        myOrder.setState(1);//入库
+        myOrder.setTime(tvInTime.getText().toString());
+        myOrder.setTotalCost(totalCost);
+
+        return myOrder;
     }
 
 
@@ -181,6 +214,7 @@ public class InStorageActivity extends BaseActivity {
         product.setCount(count);
         String unitPriceStr = tvUnitPrice.getText().toString().trim();
         product.setCostPrice(Double.valueOf(unitPriceStr));
+        product.setDate(tvInTime.getText().toString());
         mList.add(product);
 
 
@@ -211,33 +245,19 @@ public class InStorageActivity extends BaseActivity {
         tvTotalCost.setText(totalCost + "");
     }
 
-    private void saveToOderTable() {
-
-        String productJson = GsonUtil.toJson(mList);
-        MyOrder myOrder = new MyOrder();
-        myOrder.setProductDetail(productJson);
-        myOrder.setNumber(number);//产品个数
-        myOrder.setState(1);//入库
-        myOrder.setTime(tvInTime.getText().toString());
-        myOrder.setTotalCost(totalCost);
-
-
-        SQLiteDatabase database = LitePal.getDatabase();
-        database.beginTransaction();
-        //存入product表 更新库存数量
-        for (int i = 0; i < mList.size(); i++) {
-            Product product = mList.get(i);
-            Product pro = LitePal.where("name=?", product.getName()).findFirst(Product.class);
-            pro.setCount(pro.getCount() + product.getCount());
-            pro.saveOrUpdate("name=?", product.getName());
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void Event(MessageEvent messageEvent) {
+        if (messageEvent.getMessage().equals("finish")){
+            finish();
         }
-        myOrder.save();
-        database.setTransactionSuccessful();
-        database.endTransaction();
 
-
-        finish();
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
+    }
 }

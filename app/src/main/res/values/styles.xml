@@ -15,7 +15,7 @@
 
         <!--设置menu中item的图标颜色-->
         <item name="actionMenuTextColor">#ffffff</item>
-        <item name="android:textColorSecondary">#ffffff</item>
+       <!-- <item name="android:textColorSecondary">#ffffff</item>-->
     </style>
 
     <!--标题与NavigationIcon的距离-->

@@ -127,11 +127,26 @@ public class DialogUtil {
      * 创建单选对话框
      */
     public static void showSingleChoiceDialog(Activity activity, String dialogTag, String title
-        , String[] items, int selectedItem,DialogInterface.OnClickListener listener) {
+        , String[] items, int selectedItem, final OnSingleConfirmListener listener) {
         filterDialog(dialogTag);
+        final int[] selectedPosition = {0};
         AlertDialog alertDialog = new AlertDialog.Builder(activity)
                 .setTitle(title)
-                .setSingleChoiceItems(items,selectedItem,listener)
+                .setSingleChoiceItems(items, selectedItem, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        selectedPosition[0] = which;
+                    }
+                })
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (listener != null){
+                            listener.onSingleDialogConfirm(selectedPosition[0]);
+                        }
+                    }
+                })
+                .setNegativeButton("取消",null)
                 .create();
         alertDialog.show();
         dialogMap.put(dialogTag,alertDialog);
@@ -170,5 +185,8 @@ public class DialogUtil {
 
     public interface OnEditDialogConfirmListener{
         void onEditDialogConfirm(String content);
+    }
+    public interface OnSingleConfirmListener{
+        void onSingleDialogConfirm(int which);
     }
 }

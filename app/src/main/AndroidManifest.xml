@@ -20,15 +20,26 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.CategoryActivity" android:configChanges="keyboardHidden|orientation|screenSize"/>
+        <activity
+            android:name=".activity.CategoryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
             android:name=".activity.AddCategoryActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:windowSoftInputMode="stateHidden|stateUnchanged" />
-        <activity android:name=".activity.InStorageActivity" android:configChanges="keyboardHidden|orientation|screenSize" />
-        <activity android:name=".activity.OutStorageActivity" android:configChanges="keyboardHidden|orientation|screenSize" />
-        <activity android:name=".activity.AddCustomerActivity" android:configChanges="keyboardHidden|orientation|screenSize"/>
-        <activity android:name=".activity.RecordActivity" android:configChanges="keyboardHidden|orientation|screenSize"></activity>
+        <activity
+            android:name=".activity.InStorageActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity
+            android:name=".activity.OutStorageActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity
+            android:name=".activity.AddCustomerActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity
+            android:name=".activity.RecordActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity android:name=".activity.OrderDetailActivity" android:hardwareAccelerated="false"></activity>
     </application>
 
 </manifest>

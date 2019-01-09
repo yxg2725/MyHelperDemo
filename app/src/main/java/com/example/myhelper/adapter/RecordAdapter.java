@@ -4,6 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -15,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.myhelper.R;
+import com.example.myhelper.activity.OrderDetailActivity;
 import com.example.myhelper.entity.MyOrder;
 import com.example.myhelper.entity.Product;
 import com.example.myhelper.utils.AnimationUtils;
@@ -59,27 +62,39 @@ public class RecordAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         final RecordHolder h = (RecordHolder) holder;
         h.setData(position);
-        h.flMore.setOnClickListener(new View.OnClickListener() {
+        h.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (int i = 0; i < clickState.length; i++) {
-                    if (position == i){
-                        if(clickState[position] == 1){
-                            clickState[position] = 0;
-                        }else{
-                            clickState[position] = 1;//展开
-                        }
-
-
-                    }else{
-                        clickState[i] = 0;//关闭
-                    }
-                }
-
-                notifyDataSetChanged();
-
+                //跳转到点单详情
+                Intent intent = new Intent(context, OrderDetailActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("order",mList.get(position));
+                bundle.putString("from","RecordActivity");
+                intent.putExtras(bundle);
+                context.startActivity(intent);
             }
         });
+//        h.flMore.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                for (int i = 0; i < clickState.length; i++) {
+//                    if (position == i){
+//                        if(clickState[position] == 1){
+//                            clickState[position] = 0;
+//                        }else{
+//                            clickState[position] = 1;//展开
+//                        }
+//
+//
+//                    }else{
+//                        clickState[i] = 0;//关闭
+//                    }
+//                }
+//
+//                notifyDataSetChanged();
+//
+//            }
+//        });
     }
 
     @Override
@@ -105,12 +120,12 @@ public class RecordAdapter extends RecyclerView.Adapter {
         TextView tvPrice;
         @BindView(R.id.tv_order_time)
         TextView tvOrderTime;
-        @BindView(R.id.rv_product_detail)
-        RecyclerView rvDetail;
-        @BindView(R.id.fl_more)
-        FrameLayout flMore;
-        @BindView(R.id.iv_more)
-        ImageView ivMore;
+//        @BindView(R.id.rv_product_detail)
+//        RecyclerView rvDetail;
+//        @BindView(R.id.fl_more)
+//        FrameLayout flMore;
+//        @BindView(R.id.iv_more)
+//        ImageView ivMore;
         public RecordHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
@@ -151,17 +166,17 @@ public class RecordAdapter extends RecyclerView.Adapter {
             tvProduct.setText(sb.toString());
 
 
-            if(clickState[position] == 1){
-                rvDetail.setVisibility(View.VISIBLE);
-                rvDetail.setLayoutManager(new LinearLayoutManager(context));
-                ProductAdapter productAdapter = new ProductAdapter(context);
-                rvDetail.setAdapter(productAdapter);
-                productAdapter.setDatas(productList);
-                ivMore.setImageResource(R.drawable.arrow_up);
-            }else{
-                rvDetail.setVisibility(View.GONE);
-                ivMore.setImageResource(R.drawable.icon_unfold);
-            }
+//            if(clickState[position] == 1){
+//                rvDetail.setVisibility(View.VISIBLE);
+//                rvDetail.setLayoutManager(new LinearLayoutManager(context));
+//                ProductAdapter productAdapter = new ProductAdapter(context);
+//                rvDetail.setAdapter(productAdapter);
+//                productAdapter.setDatas(productList);
+//                ivMore.setImageResource(R.drawable.arrow_up);
+//            }else{
+//                rvDetail.setVisibility(View.GONE);
+//                ivMore.setImageResource(R.drawable.icon_unfold);
+//            }
 
 
         }
