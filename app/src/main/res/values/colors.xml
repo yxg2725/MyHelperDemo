@@ -13,6 +13,11 @@
     <color name="text_color2">#c27333</color>
     <color name="text_color3">#075606</color>
     <color name="text_color4">#039BE5</color>
+    <color name="text_color5">#667379</color>
+    <color name="red_normal">#FF0000</color>
+    <color name="red_pressed">#FF6666</color>
+    <color name="green_normal">#37C000</color>
+    <color name="green_pressed">#30A070</color>
 
     <color name="md_light_blue_50">#E1F5FE</color>
     <color name="md_light_blue_100">#B3E5FC</color>

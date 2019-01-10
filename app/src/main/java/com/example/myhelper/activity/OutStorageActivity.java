@@ -26,6 +26,7 @@ import com.example.myhelper.entity.Product;
 import com.example.myhelper.event.MessageEvent;
 import com.example.myhelper.utils.DialogUtil;
 import com.example.myhelper.utils.GsonUtil;
+import com.example.myhelper.utils.OrderNoCreateFactory;
 import com.example.myhelper.utils.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -72,6 +73,8 @@ public class OutStorageActivity extends BaseActivity{
 //    EditText tvUnitTotalPrice;
     @BindView(R.id.btn_sure)
     Button btnSure;
+    @BindView(R.id.btn_reset)
+    Button btnReset;
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
 
@@ -128,7 +131,7 @@ public class OutStorageActivity extends BaseActivity{
     }
 
 
-    @OnClick({R.id.tv_out_time, R.id.tv_category_name, R.id.tv_customer, R.id.btn_out,R.id.btn_sure})
+    @OnClick({R.id.tv_out_time, R.id.tv_category_name, R.id.tv_customer, R.id.btn_out,R.id.btn_sure,R.id.btn_reset})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_out_time:
@@ -203,6 +206,11 @@ public class OutStorageActivity extends BaseActivity{
                 updateRv(productName, count);
                 updateBottomView();
                 break;
+            case R.id.btn_reset://重置
+                mList.clear();
+                notifyData();
+                updateBottomView();
+                break;
             case R.id.btn_out:
                 if(!checkCanOut())return;
 
@@ -210,22 +218,27 @@ public class OutStorageActivity extends BaseActivity{
                 DialogUtil.showSingleChoiceDialog(this, "single", "是否付款", items, 0, new DialogUtil.OnSingleConfirmListener() {
                     @Override
                     public void onSingleDialogConfirm(int which) {
-                        MyOrder order = createOrder(which);
-                        //跳转到账单详情界面
-                        Intent intent = new Intent(OutStorageActivity.this,OrderDetailActivity.class);
-//                        intent.putExtra("payState",which);
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("order",order);
-//                        bundle.putSerializable("product",mList);
-                        bundle.putString("from","OutStorageActivity");
-                        bundle.putInt("payState",which);
-                        intent.putExtras(bundle);
-//                        intent.putExtra("from","OutStorageActivity");
-                        startActivity(intent);
+                        final MyOrder order = createOrder(which);
+                        toOrderDetailActivity(order,which);
                     }
                 });
                 break;
         }
+    }
+    private void toOrderDetailActivity(MyOrder order,int which){
+        //跳转到账单详情界面
+        Intent intent = new Intent(OutStorageActivity.this,OrderDetailActivity.class);
+//                        intent.putExtra("payState",which);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("order",order);
+//                        bundle.putSerializable("product",mList);
+        bundle.putString("from","OutStorageActivity");
+        bundle.putInt("payState",which);
+        intent.putExtras(bundle);
+//                        intent.putExtra("from","OutStorageActivity");
+        startActivity(intent);
+
+
     }
 
     private MyOrder createOrder(int which) {
@@ -240,6 +253,7 @@ public class OutStorageActivity extends BaseActivity{
         myOrder.setTotalPrice(totalPrice);//总收入
         Double actualPrice = Double.valueOf(tvTotalPrice.getText().toString());
         myOrder.setActualPayment(actualPrice);//实际支付的金额
+        myOrder.setOrderNo(OrderNoCreateFactory.getOrderIdByTime());
         return myOrder;
     }
 
@@ -263,7 +277,7 @@ public class OutStorageActivity extends BaseActivity{
 
         //是否选中了产品
         if (mList.isEmpty()){
-            ToastUtil.showToast("请选择产品！");
+            ToastUtil.showToast("请添加产品！");
             return false;
         }
         return true;
@@ -286,7 +300,10 @@ public class OutStorageActivity extends BaseActivity{
         product.setRetailPrice(Double.valueOf(retailPriceStr));
         product.setCostPrice(Double.valueOf(retailPriceStr));
         mList.add(product);
+        notifyData();
+    }
 
+    private void notifyData(){
 
         if (productAdapter == null) {
             rv.setLayoutManager(new LinearLayoutManager(this));

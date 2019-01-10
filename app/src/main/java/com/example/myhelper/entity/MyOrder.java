@@ -15,13 +15,21 @@ public class MyOrder extends LitePalSupport implements Serializable{
     private String time;
     private double totalCost;
     private double totalPrice;//当前订单总金额
+
     private String orderNo;
     private int orderState;//订单状态   0表示已完成  1表示未支付  2表示未全部发货
     private String sendState;//发货状态
     private double actualPayment;//实际支付总金额
     private int state;//出库0 入库1
+    private boolean isShow = true;//是否显示
 
+    public boolean isShow() {
+        return isShow;
+    }
 
+    public void setShow(boolean show) {
+        isShow = show;
+    }
 
     public double getActualPayment() {
         return actualPayment;

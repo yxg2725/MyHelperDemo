@@ -81,6 +81,42 @@ public class DialogUtil {
         alertDialog.show();
         dialogMap.put(dialogTag,alertDialog);
     }
+    /**
+     *  选择合并订单 还是 新生成订单
+     *  选择彻底删除 还是。。。
+     * @param activity
+     * @param dialogTag
+     * @param title
+     * @param msg
+     */
+    public static void showSelectedConfirmDialog(Activity activity, String dialogTag,
+                                                 String title, String msg,String positiveTitle,String negativeTitle,
+                                                 final OnConfirmListener listener){
+        filterDialog(dialogTag);
+
+        AlertDialog alertDialog = new AlertDialog.Builder(activity)
+                .setTitle(title)
+                .setMessage(msg)
+                .setPositiveButton(positiveTitle, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (listener != null){
+                            listener.onConfirmListener();
+                        }
+                    }
+                })
+                .setNegativeButton(negativeTitle, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (listener != null){
+                            listener.onNegativeconfirmListener();
+                        }
+                    }
+                })
+                .create();
+        alertDialog.show();
+        dialogMap.put(dialogTag,alertDialog);
+    }
 
     /**
      * 显示列表选择的对话框
@@ -188,5 +224,10 @@ public class DialogUtil {
     }
     public interface OnSingleConfirmListener{
         void onSingleDialogConfirm(int which);
+    }
+
+    public interface OnConfirmListener{
+        void onConfirmListener();
+        void onNegativeconfirmListener();
     }
 }

@@ -36,4 +36,6 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.2.4'
 
     compile 'org.greenrobot:eventbus:3.0.0'
+
+    implementation 'com.yanzhenjie:recyclerview-swipe:1.2.1'
 }

@@ -10,6 +10,7 @@
     <include layout="@layout/toolbar_layout"></include>
 
 
+
     <LinearLayout
         android:layout_marginTop="?attr/actionBarSize"
         android:background="@color/color_write"
@@ -42,7 +43,7 @@
                 android:layout_height="wrap_content" />
             <TextView
                 android:id="@+id/tv_order_date"
-                android:text="2019-01-02"
+                android:text=""
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
@@ -71,7 +72,7 @@
                 android:layout_height="wrap_content" />
             <TextView
                 android:id="@+id/tv_customer"
-                android:text="张三"
+                android:text=""
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
@@ -87,7 +88,7 @@
                 android:layout_height="wrap_content" />
             <TextView
                 android:id="@+id/tv_order_total_price"
-                android:text="1000"
+                android:text=""
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
@@ -105,7 +106,7 @@
                 android:layout_height="wrap_content" />
             <TextView
                 android:id="@+id/tv_send_total_price"
-                android:text="1000"
+                android:text=""
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
@@ -123,7 +124,7 @@
                 android:layout_height="wrap_content" />
             <TextView
                 android:id="@+id/tv_order_state"
-                android:text="已完成"
+                android:text=""
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
@@ -156,7 +157,7 @@
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="horizontal"
             android:padding="6dp"
-            android:background="@color/divide_line_gray2"
+            android:background="@color/divide_line_gray"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -165,10 +166,12 @@
                 android:text="产品名称"
                 android:layout_width="0dp"
                 android:layout_weight="2"
+                android:textColor="@color/color_black"
                 android:layout_height="wrap_content" />
 
             <TextView
                 android:text="数量"
+                android:textColor="@color/color_black"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content" />
@@ -177,6 +180,7 @@
 
             <TextView
                 android:text="小计"
+                android:textColor="@color/color_black"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content" />
@@ -205,5 +209,14 @@
         />
 
 
+    <ImageView
+        android:visibility="gone"
+        android:id="@+id/src_order_state"
+        android:layout_marginTop="100dp"
+        android:layout_gravity="top|right"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/ic_finished_translucence"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </FrameLayout>

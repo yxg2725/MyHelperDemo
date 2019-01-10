@@ -23,6 +23,7 @@ import com.example.myhelper.entity.MyOrder;
 import com.example.myhelper.entity.Product;
 import com.example.myhelper.event.MessageEvent;
 import com.example.myhelper.utils.GsonUtil;
+import com.example.myhelper.utils.OrderNoCreateFactory;
 import com.example.myhelper.utils.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -62,6 +63,8 @@ public class InStorageActivity extends BaseActivity {
     EditText tvNumber;
     @BindView(R.id.btn_sure)
     Button btnSure;
+    @BindView(R.id.btn_reset)
+    Button btnReset;
     @BindView(R.id.tv_unit_price)
     EditText tvUnitPrice;
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -125,7 +128,7 @@ public class InStorageActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.tv_in_time, R.id.tv_category, R.id.btn_in_storage, R.id.btn_sure})
+    @OnClick({R.id.tv_in_time, R.id.tv_category, R.id.btn_in_storage, R.id.btn_sure,R.id.btn_reset})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_in_time:
@@ -177,7 +180,13 @@ public class InStorageActivity extends BaseActivity {
                 updateRv(productName, count);
                 updateBottomView();
                 break;
+            case R.id.btn_reset:
+                mList.clear();
+                notifyData();
+                updateBottomView();
+                break;
             case R.id.btn_in_storage:
+                if(!checkCanOut())return;
                 //生成order数据
                 MyOrder order = createOrder();
                 //跳转到核对订单界面
@@ -187,14 +196,24 @@ public class InStorageActivity extends BaseActivity {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("order",order);
 //                        bundle.putSerializable("product",mList);
-                intent.putExtras(bundle);
                 bundle.putString("from","InStorageActivity");
+                intent.putExtras(bundle);
                 startActivity(intent);
 
 //                saveToOderTable();
                 break;
         }
     }
+
+    private boolean checkCanOut() {
+        //是否选中了产品
+        if (mList.isEmpty()){
+            ToastUtil.showToast("请添加产品！");
+            return false;
+        }
+        return true;
+    }
+
 
     private MyOrder createOrder() {
         String productJson = GsonUtil.toJson(mList);
@@ -204,7 +223,7 @@ public class InStorageActivity extends BaseActivity {
         myOrder.setState(1);//入库
         myOrder.setTime(tvInTime.getText().toString());
         myOrder.setTotalCost(totalCost);
-
+        myOrder.setOrderNo(OrderNoCreateFactory.getOrderIdByTime());
         return myOrder;
     }
 
@@ -216,7 +235,12 @@ public class InStorageActivity extends BaseActivity {
         product.setCostPrice(Double.valueOf(unitPriceStr));
         product.setDate(tvInTime.getText().toString());
         mList.add(product);
+        notifyData();
 
+    }
+
+
+    private void notifyData(){
 
         if (productAdapter == null) {
             rv.setLayoutManager(new LinearLayoutManager(this));
@@ -224,7 +248,6 @@ public class InStorageActivity extends BaseActivity {
             rv.setAdapter(productAdapter);
         }
         productAdapter.setDatas(mList);
-
     }
 
     private void updateBottomView() {

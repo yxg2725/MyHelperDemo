@@ -118,13 +118,23 @@
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="1dp"></View>
+
+        <Button
+            android:id="@+id/btn_reset"
+            android:text="重置"
+            android:layout_marginRight="10dp"
+            android:textColor="@color/color_write"
+            android:background="@drawable/btn_bg2"
+            android:layout_width="50dp"
+            android:layout_height="25dp" />
         <Button
             android:id="@+id/btn_sure"
             android:text="确定"
+            android:layout_marginLeft="10dp"
             android:textColor="@color/color_write"
             android:background="@drawable/btn_bg"
-            android:layout_width="60dp"
-            android:layout_height="30dp" />
+            android:layout_width="50dp"
+            android:layout_height="25dp" />
 
     </LinearLayout>
     <include layout="@layout/horizontal_divide_line"></include>

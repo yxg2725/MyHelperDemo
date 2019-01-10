@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,7 @@ import com.example.myhelper.entity.MyOrder;
 import com.example.myhelper.entity.Product;
 import com.example.myhelper.utils.AnimationUtils;
 import com.example.myhelper.utils.GsonUtil;
+import com.example.myhelper.utils.RichTextUtils;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
@@ -74,27 +77,7 @@ public class RecordAdapter extends RecyclerView.Adapter {
                 context.startActivity(intent);
             }
         });
-//        h.flMore.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                for (int i = 0; i < clickState.length; i++) {
-//                    if (position == i){
-//                        if(clickState[position] == 1){
-//                            clickState[position] = 0;
-//                        }else{
-//                            clickState[position] = 1;//展开
-//                        }
-//
-//
-//                    }else{
-//                        clickState[i] = 0;//关闭
-//                    }
-//                }
-//
-//                notifyDataSetChanged();
-//
-//            }
-//        });
+
     }
 
     @Override
@@ -120,12 +103,7 @@ public class RecordAdapter extends RecyclerView.Adapter {
         TextView tvPrice;
         @BindView(R.id.tv_order_time)
         TextView tvOrderTime;
-//        @BindView(R.id.rv_product_detail)
-//        RecyclerView rvDetail;
-//        @BindView(R.id.fl_more)
-//        FrameLayout flMore;
-//        @BindView(R.id.iv_more)
-//        ImageView ivMore;
+
         public RecordHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
@@ -140,18 +118,33 @@ public class RecordAdapter extends RecyclerView.Adapter {
                 tvOrderType.setText("出库");
                 tvOrderType.setTextColor(context.getResources().getColor(R.color.text_color4));
                 tvCustomer.setText(myOrder.getCustomerName());
-                tvPrice.setText(myOrder.getTotalPrice()+"");
+//                tvPrice.setText("合计："+myOrder.getTotalPrice());
+                tvPrice.setText("合计："+myOrder.getActualPayment());
+
             }else{
                 tvOrderType.setText("入库");
-                tvOrderType.setTextColor(context.getResources().getColor(R.color.text_color3));
                 tvCustomerTitle.setVisibility(View.GONE);
                 tvCustomer.setVisibility(View.GONE);
-                tvPrice.setText(myOrder.getTotalCost()+"");
+                tvPrice.setText("合计："+myOrder.getTotalCost());
+            }
+
+            if (myOrder.getOrderState() == 0){
+                tvOrderState.setText("已完成");
+                tvOrderState.setTextColor(context.getResources().getColor(R.color.text_color3));
+//                String html="<font color='#075606'>已完成</font> <br>";
+//                RichTextUtils.settext(tvOrderState,html);
+
+            }else if(myOrder.getOrderState() == 1){
+                tvOrderState.setText("未支付");
+                tvOrderState.setTextColor(context.getResources().getColor(R.color.text_color1));
+            }else{
+                tvOrderState.setText("未全部发货");
+                tvOrderState.setTextColor(context.getResources().getColor(R.color.text_color2));
             }
 
             tvOrderTime.setText(myOrder.getTime());
 
-            tvCount.setText(myOrder.getNumber()+"");
+            tvCount.setText("共"+myOrder.getNumber()+"件");
 
             String productDetail = myOrder.getProductDetail();
             List<Product> productList = (List<Product>) GsonUtil.parseJsonToList(productDetail, new TypeToken<List<Product>>() {
