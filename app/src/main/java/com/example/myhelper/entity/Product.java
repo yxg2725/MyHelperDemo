@@ -15,11 +15,54 @@ public class Product extends LitePalSupport implements Serializable {
     @Column(unique = true)
     private String name;
     private double costPrice;//成本价
-    private double price2;//二级代理价
-    private double price1;//一级代理价
+    private double memberPrice;//会员价
+    private double vipPrice;//贵宾价
+    private double silverPrice;//银钻价
+    private double goldPrice;//金钻价
     private double retailPrice;//零售价
-    private int wanrCount;//预警数量
-    private String effect;//功效
+//    private int wanrCount;//预警数量
+    private String other;//功效
+
+    public double getMemberPrice() {
+        return memberPrice;
+    }
+
+    public void setMemberPrice(double memberPrice) {
+        this.memberPrice = memberPrice;
+    }
+
+    public double getVipPrice() {
+        return vipPrice;
+    }
+
+    public void setVipPrice(double vipPrice) {
+        this.vipPrice = vipPrice;
+    }
+
+    public double getSilverPrice() {
+        return silverPrice;
+    }
+
+    public void setSilverPrice(double silverPrice) {
+        this.silverPrice = silverPrice;
+    }
+
+    public double getGoldPrice() {
+        return goldPrice;
+    }
+
+    public void setGoldPrice(double goldPrice) {
+        this.goldPrice = goldPrice;
+    }
+
+    public String getOther() {
+        return other;
+    }
+
+    public void setOther(String other) {
+        this.other = other;
+    }
+
     private String photoPath;//图片路径
     private int count;//库存数量
     private String date;//出入库日期
@@ -40,21 +83,7 @@ public class Product extends LitePalSupport implements Serializable {
         this.count = count;
     }
 
-    public int getWanrCount() {
-        return wanrCount;
-    }
 
-    public void setWanrCount(int wanrCount) {
-        this.wanrCount = wanrCount;
-    }
-
-    public String getEffect() {
-        return effect;
-    }
-
-    public void setEffect(String effect) {
-        this.effect = effect;
-    }
 
     public String getPhotoPath() {
         return photoPath;
@@ -80,21 +109,7 @@ public class Product extends LitePalSupport implements Serializable {
         this.costPrice = costPrice;
     }
 
-    public double getPrice2() {
-        return price2;
-    }
 
-    public void setPrice2(double price2) {
-        this.price2 = price2;
-    }
-
-    public double getPrice1() {
-        return price1;
-    }
-
-    public void setPrice1(double price1) {
-        this.price1 = price1;
-    }
 
     public double getRetailPrice() {
         return retailPrice;

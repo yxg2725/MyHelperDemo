@@ -13,6 +13,25 @@ public class Customer extends LitePalSupport {
     private String wx;
     private String phone;
     private int level;//代理级别
+    private String address;//收货地址
+
+    public String getOther() {
+        return other;
+    }
+
+    public void setOther(String other) {
+        this.other = other;
+    }
+
+    private String other;//备注
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
     public String getName() {
         return name;

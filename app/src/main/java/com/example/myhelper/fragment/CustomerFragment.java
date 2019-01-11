@@ -132,10 +132,10 @@ public class CustomerFragment extends BaseFragment implements SearchView.OnQuery
         super.onCreateOptionsMenu(menu, inflater);
 
         inflater.inflate(R.menu.category_menu, menu);
-        MenuItem searchItem = menu.findItem(R.id.menu_search);
-        mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-
-        initMenu();
+//        MenuItem searchItem = menu.findItem(R.id.menu_search);
+//        mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+//
+//        initMenu();
     }
 
 

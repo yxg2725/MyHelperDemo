@@ -1,93 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="4dp"
+    android:elevation="2dp"
+    android:background="@color/color_write"
+    android:layout_marginTop="10dp"
+    android:layout_marginLeft="6dp"
+    android:layout_marginRight="6dp"
     android:layout_height="wrap_content">
+    <LinearLayout
+        android:padding="10dp"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-    <RelativeLayout
-        android:layout_marginTop="2dp"
-        android:padding="4dp"
-        android:background="@color/color_write"
-        android:layout_height="110dp"
-        android:layout_width="match_parent">
+        <TextView
+            android:textColor="@color/text_color1"
+            android:id="@+id/tv_product_name"
+            android:text="综合酵素"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <View
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="1dp"></View>
 
-
-
-    <ImageView
-        android:padding="4dp"
-        android:id="@+id/iv_product_src"
-        android:background="@color/colorAccent"
-        android:layout_width="100dp"
-        android:layout_height="100dp" />
-
-
-
-        <LinearLayout
-            android:paddingLeft="10dp"
-            android:paddingTop="6dp"
-            android:paddingBottom="6dp"
-            android:layout_toRightOf="@+id/iv_product_src"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:textColor="@color/text_color1"
-                android:id="@+id/tv_product_name"
-                android:text="综合酵素"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+        <TextView
+            android:text="零售价：￥"
+            android:layout_marginRight="4dp"
+            android:id="@+id/tv_price_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/tv_price"
+            android:text="100.00"
+            android:textSize="18sp"
+            android:textColor="@color/text_color2"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content" />
 
 
-
-
-            <View
-                android:layout_weight="1"
-                android:layout_width="1dp"
-                android:layout_height="0dp"></View>
-            <TextView
-                android:id="@+id/tv_effect"
-                android:text="功效幅打发"
-                android:textColor="@color/text_color3"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="4dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:text="数量："
-                    android:id="@+id/tv_count_title"
-
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:layout_marginRight="20dp"
-                    android:id="@+id/tv_count"
-                    android:text="100.00"
-                    android:textColor="@color/text_color2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:text="零售价："
-                    android:id="@+id/tv_price_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:id="@+id/tv_price"
-                    android:text="￥100.00"
-                    android:textColor="@color/text_color2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-
-
-    </RelativeLayout>
-</RelativeLayout>
+    </LinearLayout>
+</android.support.v7.widget.CardView>

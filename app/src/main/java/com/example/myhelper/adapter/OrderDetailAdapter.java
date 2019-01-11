@@ -73,8 +73,6 @@ public class OrderDetailAdapter extends RecyclerView.Adapter {
 
     class OrderDetailHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.tv_date)
-        TextView tvDate;
         @BindView(R.id.tv_product_name)
         TextView tvProductName;
         @BindView(R.id.tv_count)
@@ -87,6 +85,8 @@ public class OrderDetailAdapter extends RecyclerView.Adapter {
         TextView tvTotal;
         @BindView(R.id.tv_total_count)
         TextView tvTotalCount;
+        @BindView(R.id.tv_product_item_date)
+        TextView tvProductItemDate;
         @BindView(R.id.ll_total)
         LinearLayout llTotal;
 
@@ -107,28 +107,29 @@ public class OrderDetailAdapter extends RecyclerView.Adapter {
                 tvTotalPrice.setText(product.getCount()*product.getCostPrice()+"");
             }
 
-            tvDate.setText(product.getDate());
             tvTotal.setText("总计：￥"+total);
             tvTotalCount.setText("总数量："+totalCount);
-            if (position == 0){
-                viewDivision.setVisibility(View.GONE);
-                llTotal.setVisibility(View.GONE);
-            }else{
-                if (mList.get(position-1).getDate().equals(product.getDate())){
-                    viewDivision.setVisibility(View.GONE);
-                    llTotal.setVisibility(View.GONE);
-                }else{
-                    llTotal.setVisibility(View.VISIBLE);
-                    viewDivision.setVisibility(View.VISIBLE);
-                }
-            }
+            tvProductItemDate.setText(product.getDate());
+//            if (position == 0){
+//                viewDivision.setVisibility(View.GONE);
+//                llTotal.setVisibility(View.GONE);
+//            }else{
+//                if (mList.get(position-1).getDate().equals(product.getDate())){
+//                    viewDivision.setVisibility(View.GONE);
+//                    llTotal.setVisibility(View.GONE);
+//                }else{
+//                    llTotal.setVisibility(View.VISIBLE);
+//                    viewDivision.setVisibility(View.VISIBLE);
+//                }
+//            }
 
 
 
 
             if (position != mList.size()-1){
                 viewDivision.setVisibility(View.GONE);
-                tvTotal.setVisibility(View.GONE);
+//                tvTotal.setVisibility(View.GONE);
+                llTotal.setVisibility(View.GONE);
             }else{//最后一个
                 llTotal.setVisibility(View.VISIBLE);
                 viewDivision.setVisibility(View.VISIBLE);

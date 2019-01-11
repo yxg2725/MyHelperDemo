@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -50,7 +51,8 @@ public class CategoryAdapter extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = View.inflate(parent.getContext(), R.layout.category_item, null);
+//        View view = View.inflate(parent.getContext(), R.layout.category_item, null);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.category_item,parent,false);
         return new CategoryHolder(view);
     }
 
@@ -78,20 +80,20 @@ public class CategoryAdapter extends RecyclerView.Adapter {
 
     class CategoryHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.iv_product_src)
-        ImageView ivProductSrc;
+//        @BindView(R.id.iv_product_src)
+//        ImageView ivProductSrc;
         @BindView(R.id.tv_product_name)
         TextView tvProductName;
-        @BindView(R.id.tv_effect)
-        TextView tvEffect;
-        @BindView(R.id.tv_price_title)
-        TextView tvPriceTitle;
+//        @BindView(R.id.tv_effect)
+//        TextView tvEffect;
+//        @BindView(R.id.tv_price_title)
+//        TextView tvPriceTitle;
         @BindView(R.id.tv_price)
         TextView tvPrice;
-        @BindView(R.id.tv_count_title)
-        TextView tvCountTitle;
-        @BindView(R.id.tv_count)
-        TextView tvCount;
+//        @BindView(R.id.tv_count_title)
+//        TextView tvCountTitle;
+//        @BindView(R.id.tv_count)
+//        TextView tvCount;
         public CategoryHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -101,14 +103,7 @@ public class CategoryAdapter extends RecyclerView.Adapter {
             Product product = mList.get(position);
 
             tvProductName.setText(product.getName());
-            tvEffect.setText(product.getEffect());
-            tvPrice.setText("￥"+product.getRetailPrice());
-            tvCount.setText(product.getCount()+"");
-
-            if (!showCount){
-                tvCountTitle.setVisibility(View.GONE);
-                tvCount.setVisibility(View.GONE);
-            }
+            tvPrice.setText(product.getRetailPrice() +"");
 
 
         }

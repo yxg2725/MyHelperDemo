@@ -13,6 +13,7 @@
     <include layout="@layout/toolbar_layout"></include>
 
     <LinearLayout
+        android:background="@color/color_write"
         android:layout_marginTop="6dp"
         android:padding="8dp"
         android:gravity="center_vertical"
@@ -46,6 +47,7 @@
 
 
     <LinearLayout
+        android:background="@color/color_write"
         android:padding="8dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -75,6 +77,7 @@
 
     <include layout="@layout/horizontal_divide_line"></include>
     <LinearLayout
+        android:background="@color/color_write"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:gravity="center_vertical"

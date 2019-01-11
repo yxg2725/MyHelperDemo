@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.example.myhelper.R;
 import com.example.myhelper.entity.MyOrder;
+import com.example.myhelper.utils.DateUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,7 +87,7 @@ public class OrderAdapter extends RecyclerView.Adapter {
         public void setData(int position) {
             MyOrder myOrder = mList.get(position);
 //            tvProductName.setText(myOrder.getProductName());
-            tvTime.setText(myOrder.getTime());
+            tvTime.setText(DateUtil.timestamp2ymd(myOrder.getTime()));
             tvCount.setText(myOrder.getNumber()+"");
             tvTotalPrice.setText(myOrder.getTotalCost()+"");
         }

@@ -14,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
+        app:navigationIcon="@drawable/back"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:titleTextAppearance="@style/Toolbar.TitleText"
         app:titleTextColor="@android:color/white"
@@ -50,6 +51,7 @@
             android:hint="酵素种类"
             android:layout_width="0dp"
             android:layout_weight="2"
+            android:textSize="14sp"
             android:layout_height="wrap_content" />
     </LinearLayout>
 
@@ -68,6 +70,7 @@
             android:layout_height="wrap_content" />
 
         <EditText
+            android:textSize="14sp"
             android:id="@+id/et_cost"
             android:hint="￥0.00"
             android:inputType="number"
@@ -77,6 +80,27 @@
     </LinearLayout>
 
 
+        <LinearLayout
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="零售价"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:textSize="14sp"
+                android:id="@+id/et_retail_price"
+                android:hint="￥0.00"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:inputType="number"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
 
 
     <LinearLayout
@@ -86,13 +110,14 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:text="二级代理价"
+            android:text="会员价"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content" />
 
         <EditText
-            android:id="@+id/et_cost2"
+            android:textSize="14sp"
+            android:id="@+id/et_member_price"
             android:hint="￥0.00"
             android:inputType="number"
             android:layout_width="0dp"
@@ -110,13 +135,14 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:text="一级代理价"
+            android:text="贵宾价"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content" />
 
         <EditText
-            android:id="@+id/et_cost1"
+            android:textSize="14sp"
+            android:id="@+id/et_vip_price"
             android:hint="￥0.00"
             android:inputType="number"
             android:layout_width="0dp"
@@ -125,31 +151,54 @@
     </LinearLayout>
 
 
+        <LinearLayout
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:layout_marginTop="8dp"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+            <TextView
+                android:text="银钻价"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
 
-        <TextView
-            android:text="零售价"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" />
-
-        <EditText
-            android:id="@+id/et_retail_price"
-            android:hint="￥0.00"
-            android:layout_width="0dp"
-            android:layout_weight="2"
-            android:inputType="number"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+            <EditText
+                android:textSize="14sp"
+                android:id="@+id/et_silver_price"
+                android:hint="￥0.00"
+                android:inputType="number"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
 
 
+        <LinearLayout
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <LinearLayout
+            <TextView
+                android:text="金钻价"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:textSize="14sp"
+                android:id="@+id/et_gold_price"
+                android:hint="￥0.00"
+                android:inputType="number"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+
+
+   <!-- <LinearLayout
         android:layout_marginTop="8dp"
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -162,48 +211,52 @@
             android:layout_height="wrap_content" />
 
         <EditText
+            android:textSize="14sp"
             android:id="@+id/et_warn_count"
             android:hint="库存预警数量"
             android:layout_width="0dp"
             android:layout_weight="2"
             android:inputType="number"
             android:layout_height="wrap_content" />
-    </LinearLayout>
+    </LinearLayout>-->
 
 
 
     <LinearLayout
+
         android:layout_marginTop="8dp"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <TextView
-            android:text="功效"
+            android:text="备注"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content" />
 
         <EditText
-            android:id="@+id/et_effect"
+            android:id="@+id/et_other"
             android:hint=""
             android:background="@drawable/input_effect"
             android:layout_width="0dp"
             android:layout_weight="2"
-            android:minLines="5"
+            android:minLines="3"
             android:gravity="top"
-            android:layout_height="100dp" />
+            android:layout_height="60dp" />
     </LinearLayout>
 
 
 
         <TextView
+            android:visibility="gone"
             android:text="照片"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
 
     <ImageView
+        android:visibility="gone"
         android:background="@color/colorAccent"
         android:layout_width="100dp"
         android:layout_height="100dp" />

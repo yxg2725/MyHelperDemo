@@ -239,7 +239,7 @@
     </LinearLayout>
 
 
-    <LinearLayout
+   <!-- <LinearLayout
         android:id="@+id/ll_egent_record"
         android:padding="6dp"
         android:gravity="center"
@@ -257,5 +257,5 @@
             android:text="代理发货统计"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-    </LinearLayout>
+    </LinearLayout>-->
 </LinearLayout>

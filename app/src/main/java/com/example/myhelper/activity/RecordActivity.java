@@ -1,21 +1,27 @@
 package com.example.myhelper.activity;
 
-import android.app.ListActivity;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.example.myhelper.R;
 import com.example.myhelper.adapter.RecordAdapter;
@@ -23,6 +29,7 @@ import com.example.myhelper.entity.MyOrder;
 import com.example.myhelper.entity.Product;
 import com.example.myhelper.utils.DensityUtils;
 import com.example.myhelper.utils.DialogUtil;
+import com.example.myhelper.utils.FilterWindow;
 import com.example.myhelper.utils.GsonUtil;
 import com.example.myhelper.utils.ToastUtil;
 import com.flyco.tablayout.SegmentTabLayout;
@@ -38,15 +45,20 @@ import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 import org.litepal.LitePal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+import static com.example.myhelper.activity.OrderFilterActivity.RESQUEST_CODE;
 
 public class RecordActivity extends BaseActivity implements SearchView.OnQueryTextListener {
 
 
+    private static final int REQUEST_CODE = 101;
     @BindView(R.id.segmentTabLayout)
     SegmentTabLayout stl;
     @BindView(R.id.rv)
@@ -71,7 +83,7 @@ public class RecordActivity extends BaseActivity implements SearchView.OnQueryTe
         addRvMenu();
 
         Intent intent = getIntent();
-        int position = intent.getIntExtra("position",0);
+        int position = intent.getIntExtra("position", 0);
         stl.setCurrentTab(Integer.valueOf(position));
 
 
@@ -99,11 +111,12 @@ public class RecordActivity extends BaseActivity implements SearchView.OnQueryTe
         // 菜单点击监听。
         rv.setSwipeMenuItemClickListener(mMenuItemClickListener);
     }
+
     // 创建菜单：
     SwipeMenuCreator mSwipeMenuCreator = new SwipeMenuCreator() {
         @Override
         public void onCreateMenu(SwipeMenu leftMenu, SwipeMenu rightMenu, int position) {
-            int width = DensityUtils.dp2px(RecordActivity.this,70);
+            int width = DensityUtils.dp2px(RecordActivity.this, 70);
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
             // 添加右侧的，如果不添加，则右侧不会出现菜单。
             {
@@ -132,7 +145,7 @@ public class RecordActivity extends BaseActivity implements SearchView.OnQueryTe
             int direction = menuBridge.getDirection(); // 左侧还是右侧菜单。
             int menuPosition = menuBridge.getPosition(); // 菜单在RecyclerView的Item中的Position。
 
-            switch (menuPosition){
+            switch (menuPosition) {
                 case 0:
 
                     DialogUtil.showSelectedConfirmDialog(RecordActivity.this, "selectedConfirm", "删除"
@@ -140,16 +153,31 @@ public class RecordActivity extends BaseActivity implements SearchView.OnQueryTe
                             new DialogUtil.OnConfirmListener() {
                                 @Override
                                 public void onConfirmListener() {
-                                    deleteOrderItem(position,true);
+                                    deleteOrderItem(position, true);
                                 }
 
                                 @Override
                                 public void onNegativeconfirmListener() {
-                                    deleteOrderItem(position,false);
+                                    deleteOrderItem(position, false);
                                 }
                             });
                     break;
-                case 1:
+                case 1://修改订单状态
+                    String[] items = {"已完成", "未支付", "未全部发货"};
+                    DialogUtil.showSingleChoiceDialog(RecordActivity.this, "single", "修改订单状态",
+                            items, -1, new DialogUtil.OnSingleConfirmListener() {
+                                @Override
+                                public void onSingleDialogConfirm(int which) {
+                                    //保存状态
+                                    MyOrder myOrder = orderList.get(position);
+
+                                    myOrder.setOrderState(which);
+                                    myOrder.saveOrUpdate("orderno=?", myOrder.getOrderNo());
+
+                                    //更新列表
+                                    setRvData(stl.getCurrentTab());
+                                }
+                            });
                     break;
             }
 
@@ -157,18 +185,18 @@ public class RecordActivity extends BaseActivity implements SearchView.OnQueryTe
     };
 
     //删除订单
-    private void deleteOrderItem(int position,boolean depthDelete) {
+    private void deleteOrderItem(int position, boolean depthDelete) {
         MyOrder myOrder = orderList.get(position);
 
         MyOrder order = LitePal.where("orderno=?", myOrder.getOrderNo()).findFirst(MyOrder.class);
-        if (order != null){
-            if (depthDelete){
+        if (order != null) {
+            if (depthDelete) {
 
                 depthDelete(order);
 
-            }else{
+            } else {
                 order.setShow(false);
-                order.updateAll("orderno=?",myOrder.getOrderNo());
+                order.updateAll("orderno=?", myOrder.getOrderNo());
             }
             setRvData(stl.getCurrentTab());
         }
@@ -176,7 +204,7 @@ public class RecordActivity extends BaseActivity implements SearchView.OnQueryTe
     }
 
     //删除订单并重置库存
-    public void depthDelete(MyOrder order){
+    public void depthDelete(MyOrder order) {
 
         SQLiteDatabase db = LitePal.getDatabase();
         db.beginTransaction();
@@ -184,13 +212,14 @@ public class RecordActivity extends BaseActivity implements SearchView.OnQueryTe
         order.delete();
         //重置库存
         String json = order.getProductDetail();
-        List<Product> products = (List<Product>) GsonUtil.parseJsonToList(json, new TypeToken<List<Product>>(){}.getType());
+        List<Product> products = (List<Product>) GsonUtil.parseJsonToList(json, new TypeToken<List<Product>>() {
+        }.getType());
 
         for (Product product : products) {
             Product p = LitePal.where("name=?", product.getName()).findFirst(Product.class);
-            if (order.getState() == 0){
+            if (order.getState() == 0) {
                 p.setCount(p.getCount() + product.getCount());
-            }else{
+            } else {
                 p.setCount(p.getCount() - product.getCount());
             }
 
@@ -203,17 +232,17 @@ public class RecordActivity extends BaseActivity implements SearchView.OnQueryTe
 
     private void setRvData(int position) {
         orderList.clear();
-        switch (position){
+        switch (position) {
             case 0:
                 List<MyOrder> list = LitePal.where("isshow=?", "1").find(MyOrder.class);
                 orderList.addAll(list);
                 break;
             case 1:
-                List<MyOrder> list1 = LitePal.where("isshow=? and state=?", "1","0").find(MyOrder.class);
+                List<MyOrder> list1 = LitePal.where("isshow=? and state=?", "1", "0").find(MyOrder.class);
                 orderList.addAll(list1);
                 break;
             case 2:
-                List<MyOrder> list2 = LitePal.where("isshow=? and state=?", "1","1").find(MyOrder.class);
+                List<MyOrder> list2 = LitePal.where("isshow=? and state=?", "1", "1").find(MyOrder.class);
 
                 orderList.addAll(list2);
                 break;
@@ -228,8 +257,9 @@ public class RecordActivity extends BaseActivity implements SearchView.OnQueryTe
         notifyData();
 
     }
-    private void notifyData(){
-        if (recordAdapter == null){
+
+    private void notifyData() {
+        if (recordAdapter == null) {
             rv.setLayoutManager(new LinearLayoutManager(this));
             recordAdapter = new RecordAdapter(this);
             rv.setAdapter(recordAdapter);
@@ -243,7 +273,6 @@ public class RecordActivity extends BaseActivity implements SearchView.OnQueryTe
         MenuItem searchItem = menu.findItem(R.id.menu_search);
         //通过MenuItem得到SearchView
         mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-
         initMenu();
 
         return super.onCreateOptionsMenu(menu);
@@ -255,16 +284,19 @@ public class RecordActivity extends BaseActivity implements SearchView.OnQueryTe
         mSearchView.setQueryHint("客户/订单状态");
 //        mSearchView.setMaxWidth(400);
         mSearchView.setOnQueryTextListener(this);
+
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.filter) {
-
+            Intent intent = new Intent(this, OrderFilterActivity.class);
+            startActivityForResult(intent,REQUEST_CODE);
         }
         return super.onOptionsItemSelected(item);
 
     }
+
 
     @Override
     public boolean onQueryTextSubmit(String query) {
@@ -277,4 +309,59 @@ public class RecordActivity extends BaseActivity implements SearchView.OnQueryTe
     }
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE && requestCode == RESQUEST_CODE){
+            Bundle bundle = data.getExtras();
+            if (bundle != null){
+
+                //过滤数据
+                int type = bundle.getInt("type");
+                String customer = bundle.getString("customer");
+                long startDate = bundle.getLong("startDate");
+                long endDate = bundle.getLong("endDate");
+                int orderState = bundle.getInt("orderState");
+
+
+                StringBuilder sql = new StringBuilder("1=1 ");
+                List<String> conditions = new ArrayList<>();
+
+                if(type!= 0){
+                    sql.append("and state=? ");
+                    conditions.add(String.valueOf(type-1));
+                }
+
+                if (TextUtils.isEmpty(customer)){
+                    sql.append("and customername=? ");
+                    conditions.add(customer);
+                }
+                if (startDate != 0){
+                    sql.append("and time>=? ");
+                    conditions.add(String.valueOf(startDate));
+                }
+
+                if (endDate != 0){
+                    sql.append("and time<=? ");
+                    conditions.add(String.valueOf(endDate));
+
+                }
+
+                if (orderState != 0){
+                    sql.append("and orderstate=? ");
+                    conditions.add(String.valueOf(type-1));
+                }
+
+                conditions.set(0, sql.toString());
+                String[] conditionArray = (String[]) conditions.toArray();
+
+                List<MyOrder> myOrders = LitePal.where(conditionArray).find(MyOrder.class);
+                orderList.clear();
+                orderList.addAll(myOrders);
+                notifyData();
+
+            }
+
+        }
+    }
 }

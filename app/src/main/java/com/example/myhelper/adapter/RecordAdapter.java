@@ -23,6 +23,7 @@ import com.example.myhelper.activity.OrderDetailActivity;
 import com.example.myhelper.entity.MyOrder;
 import com.example.myhelper.entity.Product;
 import com.example.myhelper.utils.AnimationUtils;
+import com.example.myhelper.utils.DateUtil;
 import com.example.myhelper.utils.GsonUtil;
 import com.example.myhelper.utils.RichTextUtils;
 import com.google.gson.reflect.TypeToken;
@@ -142,7 +143,7 @@ public class RecordAdapter extends RecyclerView.Adapter {
                 tvOrderState.setTextColor(context.getResources().getColor(R.color.text_color2));
             }
 
-            tvOrderTime.setText(myOrder.getTime());
+            tvOrderTime.setText(DateUtil.timestamp2ymd(myOrder.getTime()));
 
             tvCount.setText("共"+myOrder.getNumber()+"件");
 

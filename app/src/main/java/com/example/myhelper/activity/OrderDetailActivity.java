@@ -20,6 +20,7 @@ import com.example.myhelper.entity.Customer;
 import com.example.myhelper.entity.MyOrder;
 import com.example.myhelper.entity.Product;
 import com.example.myhelper.event.MessageEvent;
+import com.example.myhelper.utils.DateUtil;
 import com.example.myhelper.utils.DialogUtil;
 import com.example.myhelper.utils.GsonUtil;
 import com.example.myhelper.widget.SawtoothBlackView;
@@ -218,6 +219,14 @@ public class OrderDetailActivity extends BaseActivity {
                             });
                 }else{
 
+
+                    //设置订单状态
+                    if (mOrder.getTotalPrice() >= mOrder.getActualPayment()){
+                        mOrder.setOrderState(0);
+                    }else{
+                        mOrder.setOrderState(2);
+                    }
+
                     setOutData(false);
                     initOrderDetail();
                     newOrderFlag = 0;
@@ -252,7 +261,8 @@ public class OrderDetailActivity extends BaseActivity {
     }
 
     private void setOutData(boolean isRecord){
-        tvOrderDate.setText(mOrder.getTime());
+
+        tvOrderDate.setText(DateUtil.timestamp2ymd(mOrder.getTime()));
         tvCustomer.setText(mOrder.getCustomerName());
         tvOrderTotalPrice.setText(mOrder.getActualPayment()+"");
         tvSendTotalPrice.setText(mOrder.getTotalPrice()+"");
@@ -298,7 +308,7 @@ public class OrderDetailActivity extends BaseActivity {
 
 
     private void setInData(){
-        tvOrderDate.setText(mOrder.getTime());
+        tvOrderDate.setText(DateUtil.timestamp2ymd(mOrder.getTime()));
         tvOrderTotalPrice.setText(mOrder.getTotalCost()+"");//订单总金额
         llCustomer.setVisibility(View.GONE);
         llSendPrice.setVisibility(View.GONE);

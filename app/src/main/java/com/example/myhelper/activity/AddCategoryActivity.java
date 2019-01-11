@@ -25,16 +25,20 @@ public class AddCategoryActivity extends BaseActivity {
     EditText etCategoryName;
     @BindView(R.id.et_cost)
     EditText etCost;
-    @BindView(R.id.et_cost2)
-    EditText etCost2;
-    @BindView(R.id.et_cost1)
-    EditText etCost1;
+    @BindView(R.id.et_member_price)//会员价
+    EditText etMember;
+    @BindView(R.id.et_vip_price)
+    EditText etVip;
+    @BindView(R.id.et_silver_price)
+    EditText etSilver;
+    @BindView(R.id.et_gold_price)
+    EditText etGold;
     @BindView(R.id.et_retail_price)
     EditText etRetailPrice;
-    @BindView(R.id.et_warn_count)
-    EditText etWarnCount;
-    @BindView(R.id.et_effect)
-    EditText etEffect;
+//    @BindView(R.id.et_warn_count)
+//    EditText etWarnCount;
+    @BindView(R.id.et_other)
+    EditText etOther;
     private Product mProduct;
     private boolean isShowSave = true;
     private MenuItem menuSaveitem;
@@ -68,11 +72,13 @@ public class AddCategoryActivity extends BaseActivity {
     private void setDatas() {
         etCategoryName.setText(mProduct.getName());
         etCost.setText(""+mProduct.getCostPrice());
-        etCost1.setText(""+mProduct.getPrice1());
-        etCost2.setText(""+mProduct.getPrice2());
+        etMember.setText(""+mProduct.getMemberPrice());
+        etVip.setText(""+mProduct.getVipPrice());
+        etSilver.setText(""+mProduct.getSilverPrice());
+        etGold.setText(""+mProduct.getGoldPrice());
         etRetailPrice.setText(""+mProduct.getRetailPrice());
-        etWarnCount.setText(mProduct.getWanrCount()+"");
-        etEffect.setText(mProduct.getEffect());
+//        etWarnCount.setText(mProduct.getWanrCount()+"");
+        etOther.setText(mProduct.getOther());
 
 
 
@@ -82,11 +88,13 @@ public class AddCategoryActivity extends BaseActivity {
     private void setEditTextEditable(boolean isClick) {
         etCategoryName.setEnabled(isClick);
         etCost.setEnabled(isClick);
-        etCost1.setEnabled(isClick);
-        etCost2.setEnabled(isClick);
+        etMember.setEnabled(isClick);
+        etVip.setEnabled(isClick);
+        etSilver.setEnabled(isClick);
         etRetailPrice.setEnabled(isClick);
-        etWarnCount.setEnabled(isClick);
-        etEffect.setEnabled(isClick);
+        etGold.setEnabled(isClick);
+//        etWarnCount.setEnabled(isClick);
+        etOther.setEnabled(isClick);
     }
 
     @Override
@@ -131,41 +139,52 @@ public class AddCategoryActivity extends BaseActivity {
     private void saveCategory() {
         String name = etCategoryName.getText().toString().trim();
         String costStr = etCost.getText().toString().trim();
-        String costStr1 = etCost1.getText().toString().trim();
-        String costStr2 = etCost2.getText().toString().trim();
+        String memberStr = etMember.getText().toString().trim();
+        String vipStr = etVip.getText().toString().trim();
         String retailStr = etRetailPrice.getText().toString().trim();
-        String warnCountStr = etWarnCount.getText().toString().trim();
-        String effect = etEffect.getText().toString().trim();
+        String silverStr = etSilver.getText().toString().trim();
+        String goldStr = etGold.getText().toString().trim();
+        String other = etOther.getText().toString().trim();
 
         Double cost=0.0;
-        Double cost1=0.0;
-        Double cost2=0.0;
+        Double memberPrice=0.0;
+        Double vipPrice=0.0;
+        Double silverPrice=0.0;
+        Double goldPrice=0.0;
         Double retailPrice=0.0;
         Integer warnCount=0;
         if (!TextUtils.isEmpty(costStr)){
             cost = Double.valueOf(costStr);
         }
-        if (!TextUtils.isEmpty(costStr1)){
-            cost1 = Double.valueOf(costStr1);
+        if (!TextUtils.isEmpty(memberStr)){
+            memberPrice = Double.valueOf(memberStr);
         }
-        if (!TextUtils.isEmpty(costStr2)){
-            cost2 = Double.valueOf(costStr2);
+        if (!TextUtils.isEmpty(vipStr)){
+            vipPrice = Double.valueOf(vipStr);
+        }
+        if (!TextUtils.isEmpty(silverStr)){
+            silverPrice = Double.valueOf(silverStr);
+        }
+        if (!TextUtils.isEmpty(goldStr)){
+            goldPrice = Double.valueOf(goldStr);
         }
         if (!TextUtils.isEmpty(retailStr)){
             retailPrice = Double.valueOf(retailStr);
         }
-        if (!TextUtils.isEmpty(warnCountStr)){
-            warnCount = Integer.valueOf(warnCountStr);
-        }
+//        if (!TextUtils.isEmpty(warnCountStr)){
+//            warnCount = Integer.valueOf(warnCountStr);
+//        }
 
         Product product = new Product();
         product.setName(name);
         product.setCostPrice(cost);
-        product.setPrice1(cost1);
-        product.setPrice2(cost2);
+        product.setMemberPrice(memberPrice);
+        product.setVipPrice(vipPrice);
         product.setRetailPrice(retailPrice);
-        product.setEffect(effect);
-        product.setWanrCount(warnCount);
+        product.setSilverPrice(silverPrice);
+        product.setGoldPrice(goldPrice);
+        product.setOther(other);
+//        product.setWanrCount(warnCount);
 //        product.save();
         boolean result = product.saveOrUpdate("name = ?", name);
 

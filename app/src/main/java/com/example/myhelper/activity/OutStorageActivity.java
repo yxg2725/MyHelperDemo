@@ -24,8 +24,10 @@ import com.example.myhelper.entity.Customer;
 import com.example.myhelper.entity.MyOrder;
 import com.example.myhelper.entity.Product;
 import com.example.myhelper.event.MessageEvent;
+import com.example.myhelper.utils.DateUtil;
 import com.example.myhelper.utils.DialogUtil;
 import com.example.myhelper.utils.GsonUtil;
+import com.example.myhelper.utils.InputMethodUtils;
 import com.example.myhelper.utils.OrderNoCreateFactory;
 import com.example.myhelper.utils.ToastUtil;
 
@@ -136,6 +138,8 @@ public class OutStorageActivity extends BaseActivity{
         switch (view.getId()) {
             case R.id.tv_out_time:
                 //时间选择器
+                InputMethodUtils.hintKeyBoard(this,getCurrentFocus());
+
                 TimePickerView pvTime = new TimePickerBuilder(this, new OnTimeSelectListener() {
                     @Override
                     public void onTimeSelect(Date date, View v) {
@@ -158,6 +162,10 @@ public class OutStorageActivity extends BaseActivity{
                 break;
             case R.id.tv_category_name:
                 //选择产品
+                InputMethodUtils.hintKeyBoard(this,getCurrentFocus());
+
+                if(!checkHasProduct())return;
+
                 OptionsPickerView pvOptions = new OptionsPickerBuilder(this, new OnOptionsSelectListener() {
 
                     @Override
@@ -165,7 +173,8 @@ public class OutStorageActivity extends BaseActivity{
 
                         String productName = categorylist.get(options1);
                         tvCategoryName.setText(productName);
-
+                        //更新单价
+                        updateUnitPrice(tvCustomer.getText().toString(),productName);
 
                     }
                 }).build();
@@ -174,6 +183,12 @@ public class OutStorageActivity extends BaseActivity{
                 break;
             case R.id.tv_customer:
                 //选择客户
+                InputMethodUtils.hintKeyBoard(this,getCurrentFocus());
+
+                //查询是否存在客户
+                if(!checkhasCustomer())return;
+
+
                 OptionsPickerView customerOptions = new OptionsPickerBuilder(this, new OnOptionsSelectListener() {
 
                     @Override
@@ -181,7 +196,8 @@ public class OutStorageActivity extends BaseActivity{
 
                         String customerName = customerlist.get(options1);
                         tvCustomer.setText(customerName);
-
+                        //更新单价
+                        updateUnitPrice(customerName,tvCategoryName.getText().toString());
 
                     }
                 }).build();
@@ -225,6 +241,60 @@ public class OutStorageActivity extends BaseActivity{
                 break;
         }
     }
+
+    private void updateUnitPrice(String customerName,String productName) {
+        Customer customer = LitePal.where("name=?", customerName).findFirst(Customer.class);
+        Product product = LitePal.where("name=?", productName).findFirst(Product.class);
+
+        if (customer == null || product == null)return;
+
+        double price = 0;
+        switch (customer.getLevel()){
+            case 0:
+                price = product.getRetailPrice();
+                break;
+            case 1:
+                price = product.getMemberPrice();
+                break;
+            case 2:
+                price = product.getVipPrice();
+                break;
+            case 3:
+                price = product.getSilverPrice();
+                break;
+            case 4:
+                price = product.getGoldPrice();
+                break;
+        }
+        tvUnitPrice.setText(price+"");
+    }
+
+    private boolean checkHasProduct() {
+        List<Product> products = LitePal.findAll(Product.class);
+        if (products != null && !products.isEmpty()){
+            return true;
+        }
+
+        ToastUtil.showToast("请先添加产品");
+        Intent intent = new Intent(this, AddCategoryActivity.class);
+        startActivity(intent);
+
+        return false;
+    }
+
+    private boolean checkhasCustomer() {
+        List<Customer> customers = LitePal.findAll(Customer.class);
+        if (customers != null && !customers.isEmpty()){
+            return true;
+        }
+
+        ToastUtil.showToast("请先添加客户");
+        //跳转到添加客户界面
+        Intent intent = new Intent(this, AddCustomerActivity.class);
+        startActivity(intent);
+        return false;
+    }
+
     private void toOrderDetailActivity(MyOrder order,int which){
         //跳转到账单详情界面
         Intent intent = new Intent(OutStorageActivity.this,OrderDetailActivity.class);
@@ -247,7 +317,13 @@ public class OutStorageActivity extends BaseActivity{
         myOrder.setProductDetail(productJson);
         myOrder.setNumber(number);
         myOrder.setState(0);//出库
-        myOrder.setTime(tvOutTime.getText().toString());
+        try {
+            Date date = DateUtil.parse2Date(tvOutTime.getText().toString());
+            myOrder.setTime(date.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         myOrder.setCustomerName(tvCustomer.getText().toString());//客户
 //        myOrder.setTotalCost(count * product.getCostPrice());//总成本
         myOrder.setTotalPrice(totalPrice);//总收入

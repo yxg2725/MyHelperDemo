@@ -22,7 +22,9 @@ import com.example.myhelper.adapter.ProductAdapter;
 import com.example.myhelper.entity.MyOrder;
 import com.example.myhelper.entity.Product;
 import com.example.myhelper.event.MessageEvent;
+import com.example.myhelper.utils.DateUtil;
 import com.example.myhelper.utils.GsonUtil;
+import com.example.myhelper.utils.InputMethodUtils;
 import com.example.myhelper.utils.OrderNoCreateFactory;
 import com.example.myhelper.utils.ToastUtil;
 
@@ -132,6 +134,7 @@ public class InStorageActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_in_time:
+                InputMethodUtils.hintKeyBoard(this,getCurrentFocus());
                 //时间选择器
                 TimePickerView pvTime = new TimePickerBuilder(InStorageActivity.this, new OnTimeSelectListener() {
                     @Override
@@ -154,6 +157,10 @@ public class InStorageActivity extends BaseActivity {
                 pvTime.show();
                 break;
             case R.id.tv_category:
+                InputMethodUtils.hintKeyBoard(this,getCurrentFocus());
+
+                //检查是否添加产品
+                if(!checkHasProduct())return;
                 //条件选择器
                 OptionsPickerView pvOptions = new OptionsPickerBuilder(InStorageActivity.this, new OnOptionsSelectListener() {
 
@@ -205,6 +212,19 @@ public class InStorageActivity extends BaseActivity {
         }
     }
 
+    private boolean checkHasProduct() {
+        List<Product> products = LitePal.findAll(Product.class);
+        if (products != null && !products.isEmpty()){
+            return true;
+        }
+
+        ToastUtil.showToast("请先添加产品");
+        Intent intent = new Intent(this, AddCategoryActivity.class);
+        startActivity(intent);
+
+        return false;
+    }
+
     private boolean checkCanOut() {
         //是否选中了产品
         if (mList.isEmpty()){
@@ -221,7 +241,13 @@ public class InStorageActivity extends BaseActivity {
         myOrder.setProductDetail(productJson);
         myOrder.setNumber(number);//产品个数
         myOrder.setState(1);//入库
-        myOrder.setTime(tvInTime.getText().toString());
+        try {
+            Date date = DateUtil.parse2Date(tvInTime.getText().toString());
+            myOrder.setTime(date.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         myOrder.setTotalCost(totalCost);
         myOrder.setOrderNo(OrderNoCreateFactory.getOrderIdByTime());
         return myOrder;

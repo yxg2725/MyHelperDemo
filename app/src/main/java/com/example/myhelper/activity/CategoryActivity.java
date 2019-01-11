@@ -70,10 +70,10 @@ public class CategoryActivity extends BaseActivity implements SearchView.OnQuery
 
         getMenuInflater().inflate(R.menu.category_menu, menu);
         MenuItem searchItem = menu.findItem(R.id.menu_search);
-        //通过MenuItem得到SearchView
-        mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-
-        initMenu();
+//        //通过MenuItem得到SearchView
+//        mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+//
+//        initMenu();
         return super.onCreateOptionsMenu(menu);
 
     }

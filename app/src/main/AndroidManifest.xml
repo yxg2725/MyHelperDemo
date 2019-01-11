@@ -39,7 +39,10 @@
         <activity
             android:name=".activity.RecordActivity"
             android:configChanges="keyboardHidden|orientation|screenSize" />
-        <activity android:name=".activity.OrderDetailActivity" android:hardwareAccelerated="false"></activity>
+        <activity
+            android:name=".activity.OrderDetailActivity"
+            android:hardwareAccelerated="false" />
+        <activity android:name=".activity.OrderFilterActivity"></activity>
     </application>
 
 </manifest>

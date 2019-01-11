@@ -15,6 +15,7 @@ import com.bigkoo.pickerview.listener.OnOptionsSelectListener;
 import com.bigkoo.pickerview.view.OptionsPickerView;
 import com.example.myhelper.R;
 import com.example.myhelper.entity.Customer;
+import com.example.myhelper.utils.InputMethodUtils;
 
 import org.litepal.LitePal;
 
@@ -32,8 +33,12 @@ public class AddCustomerActivity extends BaseActivity {
     EditText etCustomerName;
     @BindView(R.id.et_wx)
     EditText etWx;
-    @BindView(R.id.et_photo)
-    EditText etPhoto;
+    @BindView(R.id.et_phone)
+    EditText etPhone;
+    @BindView(R.id.et_address)
+    EditText etAddress;
+    @BindView(R.id.et_other)
+    EditText etOther;
     @BindView(R.id.tv_agent_level)
     TextView tvAgentLevel;
 
@@ -51,9 +56,11 @@ public class AddCustomerActivity extends BaseActivity {
     protected void init() {
         super.init();
         setToolbar("添加客户", true);
-        agentLevels.add("普通客户");
-        agentLevels.add("一级代理");
-        agentLevels.add("二级代理");
+        agentLevels.add("普通客户");//0
+        agentLevels.add("会员");//1
+        agentLevels.add("贵宾");//2
+        agentLevels.add("银钻");//3
+        agentLevels.add("金钻");//4
         tvAgentLevel.setText(agentLevels.get(0));
 
         Intent intent = getIntent();
@@ -69,8 +76,10 @@ public class AddCustomerActivity extends BaseActivity {
     private void setDatas() {
         etCustomerName.setText(customer.getName());
         etWx.setText(customer.getWx());
-        etPhoto.setText(customer.getPhone());
+        etPhone.setText(customer.getPhone());
         tvAgentLevel.setText(agentLevels.get(customer.getLevel()));
+        etAddress.setText(customer.getAddress());
+        etOther.setText(customer.getOther());
 
 
 
@@ -80,14 +89,18 @@ public class AddCustomerActivity extends BaseActivity {
     private void setEditTextEditable(boolean isClick) {
         etCustomerName.setEnabled(isClick);
         etWx.setEnabled(isClick);
-        etPhoto.setEnabled(isClick);
+        etPhone.setEnabled(isClick);
         tvAgentLevel.setEnabled(isClick);
+        etAddress.setEnabled(isClick);
+        etOther.setEnabled(isClick);
     }
 
 
 
     @OnClick(R.id.tv_agent_level)
     public void onViewClicked() {
+
+        InputMethodUtils.hintKeyBoard(this,getCurrentFocus());
 
         //条件选择器
         OptionsPickerView pvOptions = new OptionsPickerBuilder(this, new OnOptionsSelectListener() {
@@ -150,13 +163,17 @@ public class AddCustomerActivity extends BaseActivity {
     private void saveCustomer() {
         String name = etCustomerName.getText().toString().trim();
         String wx = etWx.getText().toString().trim();
-        String photo = etPhoto.getText().toString().trim();
+        String phone = etPhone.getText().toString().trim();
+        String address = etAddress.getText().toString().trim();
+        String other = etOther.getText().toString().trim();
         String agnetLevel = tvAgentLevel.getText().toString();
 
         Customer customer = new Customer();
         customer.setName(name);
         customer.setWx(wx);
-        customer.setPhone(photo);
+        customer.setPhone(phone);
+        customer.setAddress(address);
+        customer.setOther(address);
         int level = agentLevels.indexOf(agnetLevel);
         customer.setLevel(level);
         boolean result = customer.saveOrUpdate("name=?", name);

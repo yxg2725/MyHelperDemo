@@ -1,5 +1,6 @@
 package com.example.myhelper.entity;
 
+import org.litepal.annotation.Column;
 import org.litepal.crud.LitePalSupport;
 
 import java.io.Serializable;
@@ -12,10 +13,10 @@ public class MyOrder extends LitePalSupport implements Serializable{
     private String productDetail;//所有产品信息
     private String customerName;
     private int number;
-    private String time;
+    private long time;
     private double totalCost;
     private double totalPrice;//当前订单总金额
-
+    @Column(unique = true)
     private String orderNo;
     private int orderState;//订单状态   0表示已完成  1表示未支付  2表示未全部发货
     private String sendState;//发货状态
@@ -109,11 +110,11 @@ public class MyOrder extends LitePalSupport implements Serializable{
         this.number = number;
     }
 
-    public String getTime() {
+    public long getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(long time) {
         this.time = time;
     }
 

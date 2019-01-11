@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.example.myhelper.R;
+import com.example.myhelper.utils.DensityUtils;
 
 /**
  * Created by ccy on 2016/9/8.
@@ -40,7 +41,8 @@ public class QuickIndexBar extends View {
 		paint.setColor(Color.GRAY);
 		//抗锯齿
 		paint.setAntiAlias(true);
-		paint.setTextSize(20);
+
+		paint.setTextSize(DensityUtils.dp2px(getContext(),20));
 		//设置粗体和斜体
 		paint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD_ITALIC));
 
@@ -99,12 +101,18 @@ public class QuickIndexBar extends View {
 					//计算触摸的点所在的位置
 					currentIndex = (int) (y / cellHeight);
 					//识别被触摸到的letter
-					String letter = Cheeses.LETTERS[currentIndex];
-					//检查触摸的位置与上一个位置是否一致,如果不一致,则打印
-					if (preIndex != currentIndex) {
-						Log.i("test", "letter:" + letter);
-						listener.onLetterChanged(letter);
+					try {
+						String letter = Cheeses.LETTERS[currentIndex];
+						//检查触摸的位置与上一个位置是否一致,如果不一致,则打印
+						if (preIndex != currentIndex) {
+							Log.i("test", "letter:" + letter);
+							listener.onLetterChanged(letter);
+						}
+					}catch (Exception e){
+
 					}
+
+
 					invalidate();
 				}
 				break;
