@@ -53,18 +53,19 @@ public class MainActivity extends BaseActivity {
     protected void init() {
         super.init();
 
+
         setToolbar("我的助手",false);
         initTablayout();
         initViewPager();
     }
 
     private void initViewPager() {
-        for (int i = 0; i < mTitles.length; i++) {
+
             mFragments.add(new HomeFragment());
             mFragments.add(new StockFragment());
             mFragments.add(new CustomerFragment());
             mFragments.add(new ChartFragment());
-        }
+
         mAdapter = new MyPagerAdapter(getSupportFragmentManager(),mTitles,mFragments);
         viewpager.setAdapter(mAdapter);
 

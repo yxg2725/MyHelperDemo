@@ -223,6 +223,7 @@ public class OutStorageActivity extends BaseActivity{
                 updateBottomView();
                 break;
             case R.id.btn_reset://重置
+                totalCost = 0;
                 mList.clear();
                 notifyData();
                 updateBottomView();
@@ -325,7 +326,8 @@ public class OutStorageActivity extends BaseActivity{
         }
 
         myOrder.setCustomerName(tvCustomer.getText().toString());//客户
-//        myOrder.setTotalCost(count * product.getCostPrice());//总成本
+
+        myOrder.setTotalCost(totalCost);//总成本
         myOrder.setTotalPrice(totalPrice);//总收入
         Double actualPrice = Double.valueOf(tvTotalPrice.getText().toString());
         myOrder.setActualPayment(actualPrice);//实际支付的金额
@@ -367,6 +369,7 @@ public class OutStorageActivity extends BaseActivity{
         return true;
     }
 
+    double totalCost = 0;
     private void updateRv(String name, Integer count) {
         Product product = LitePal.where("name=?", name).findFirst(Product.class);
         product.setCount(count);
@@ -374,7 +377,9 @@ public class OutStorageActivity extends BaseActivity{
         String retailPriceStr = tvUnitPrice.getText().toString().trim();
 
         product.setRetailPrice(Double.valueOf(retailPriceStr));
-        product.setCostPrice(Double.valueOf(retailPriceStr));
+//        product.setCostPrice(Double.valueOf(retailPriceStr));
+
+        totalCost = totalCost + count * product.getCostPrice();
         mList.add(product);
         notifyData();
     }

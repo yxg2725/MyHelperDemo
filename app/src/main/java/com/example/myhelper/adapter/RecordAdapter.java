@@ -121,9 +121,11 @@ public class RecordAdapter extends RecyclerView.Adapter {
                 tvCustomer.setText(myOrder.getCustomerName());
 //                tvPrice.setText("合计："+myOrder.getTotalPrice());
                 tvPrice.setText("合计："+myOrder.getActualPayment());
-
+                tvCustomerTitle.setVisibility(View.VISIBLE);
+                tvCustomer.setVisibility(View.VISIBLE);
             }else{
                 tvOrderType.setText("入库");
+                tvOrderType.setTextColor(context.getResources().getColor(R.color.text_color5));
                 tvCustomerTitle.setVisibility(View.GONE);
                 tvCustomer.setVisibility(View.GONE);
                 tvPrice.setText("合计："+myOrder.getTotalCost());

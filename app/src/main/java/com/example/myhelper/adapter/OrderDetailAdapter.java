@@ -102,7 +102,6 @@ public class OrderDetailAdapter extends RecyclerView.Adapter {
 
             if (state==0){
                 tvTotalPrice.setText(product.getCount()*product.getRetailPrice()+"");
-                tvTotalPrice.setText(product.getCount()*product.getRetailPrice()+"");
             }else if(state==1){
                 tvTotalPrice.setText(product.getCount()*product.getCostPrice()+"");
             }

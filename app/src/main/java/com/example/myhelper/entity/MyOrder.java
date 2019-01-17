@@ -14,7 +14,7 @@ public class MyOrder extends LitePalSupport implements Serializable{
     private String customerName;
     private int number;
     private long time;
-    private double totalCost;
+    private double totalCost;//总成本
     private double totalPrice;//当前订单总金额
     @Column(unique = true)
     private String orderNo;

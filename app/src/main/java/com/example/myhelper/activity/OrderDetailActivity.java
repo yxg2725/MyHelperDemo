@@ -221,11 +221,16 @@ public class OrderDetailActivity extends BaseActivity {
 
 
                     //设置订单状态
-                    if (mOrder.getTotalPrice() >= mOrder.getActualPayment()){
-                        mOrder.setOrderState(0);
-                    }else{
-                        mOrder.setOrderState(2);
+                    if (payState == 1 ){//未付款
+                        mOrder.setOrderState(1);
+                    }else{//已付款
+                        if (mOrder.getTotalPrice() >= mOrder.getActualPayment()){
+                            mOrder.setOrderState(0);
+                        }else{
+                            mOrder.setOrderState(2);
+                        }
                     }
+
 
                     setOutData(false);
                     initOrderDetail();
@@ -236,8 +241,8 @@ public class OrderDetailActivity extends BaseActivity {
 
             }else if("InStorageActivity".equals(from)){
                 tvOrderTitle.setText("入库订单核对");
-                setInData();
-
+                setInData(false);
+                mOrder.setOrderState(0);
                 initOrderDetail();
             }else if("RecordActivity".equals(from)){
                 if (mOrder.getState() == 0) {//出库
@@ -247,7 +252,7 @@ public class OrderDetailActivity extends BaseActivity {
                 }else if (mOrder.getState() == 1){//入库
                     tvOrderTitle.setText("入库订单详情");
                     iconOrderState.setVisibility(View.VISIBLE);
-                    setInData();
+                    setInData(true);
                 }
 
                 initOrderDetail();
@@ -267,31 +272,6 @@ public class OrderDetailActivity extends BaseActivity {
         tvOrderTotalPrice.setText(mOrder.getActualPayment()+"");
         tvSendTotalPrice.setText(mOrder.getTotalPrice()+"");
 
-        /*if (!isRecord){
-            if (payState == 0){
-                if (mOrder.getTotalPrice()>=mOrder.getActualPayment()){
-                    tvOrderState.setText("已完成");
-                    mOrder.setOrderState(0);
-                }else{
-                    tvOrderState.setText("未全部发货");
-                    mOrder.setOrderState(2);
-                }
-            }else{
-                tvOrderState.setText("未支付");
-                mOrder.setOrderState(1);
-            }
-        }else{//从记录列表过来的
-            if (mOrder.getOrderState() == 0){
-                tvOrderState.setText("已完成");
-                iconOrderState.setVisibility(View.VISIBLE);
-            }else if(mOrder.getOrderState() == 1){
-                tvOrderState.setText("未支付");
-            }else{
-                tvOrderState.setText("未全部发货");
-            }
-
-        }*/
-
         if(isRecord){
             if (mOrder.getOrderState() == 0){
                 tvOrderState.setText("已完成");
@@ -307,13 +287,17 @@ public class OrderDetailActivity extends BaseActivity {
     }
 
 
-    private void setInData(){
+    private void setInData(boolean showState){
         tvOrderDate.setText(DateUtil.timestamp2ymd(mOrder.getTime()));
         tvOrderTotalPrice.setText(mOrder.getTotalCost()+"");//订单总金额
         llCustomer.setVisibility(View.GONE);
         llSendPrice.setVisibility(View.GONE);
-//        tvOrderState.setText("已完成");
-        mOrder.setOrderState(0);
+
+        if (showState){
+            tvOrderState.setText("已完成");
+        }
+
+//        mOrder.setOrderState(0);
 
     }
 

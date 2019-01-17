@@ -209,7 +209,7 @@ public class OrderFilterActivity extends BaseActivity {
 
 
         if (item.getItemId() == R.id.save){
-            Intent intent = new Intent();
+            Intent intent = new Intent(this,RecordActivity.class);
             intent.putExtras(bundle);
             setResult(RESQUEST_CODE,intent);
             finish();

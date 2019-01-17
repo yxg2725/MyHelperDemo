@@ -21,6 +21,27 @@
         tl:tl_indicator_corner_radius="8dp"
         tl:tl_tab_padding="20dp"/>
 
+    <LinearLayout
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/tv_total_out"
+            android:text="总支出：￥100"
+            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:id="@+id/tv_total_income"
+            android:text="总收入：￥100"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
     <com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView
         android:id="@+id/rv"
         android:layout_width="match_parent"

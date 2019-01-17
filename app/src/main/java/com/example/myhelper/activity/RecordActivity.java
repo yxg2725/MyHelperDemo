@@ -10,6 +10,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -56,13 +57,17 @@ import butterknife.OnClick;
 import static com.example.myhelper.activity.OrderFilterActivity.RESQUEST_CODE;
 
 public class RecordActivity extends BaseActivity implements SearchView.OnQueryTextListener {
-
+    private static final String TAG = "RecordActivity";
 
     private static final int REQUEST_CODE = 101;
     @BindView(R.id.segmentTabLayout)
     SegmentTabLayout stl;
     @BindView(R.id.rv)
     SwipeMenuRecyclerView rv;
+    @BindView(R.id.tv_total_out)
+    TextView tvTotalOut;
+    @BindView(R.id.tv_total_income)
+    TextView tvTotaIncome;
     private SearchView mSearchView;
     private String[] mTitles = {"全部", "出库", "入库"};
     private List<MyOrder> orderList = new ArrayList<>();
@@ -251,6 +256,35 @@ public class RecordActivity extends BaseActivity implements SearchView.OnQueryTe
 
         Collections.reverse(orderList);
         notifyData();
+
+        //统计 总收入和支出
+        statistics();
+    }
+
+    private void statistics(){
+        double out = 0;
+        double income = 0;
+        for (MyOrder myOrder : orderList) {
+            if (myOrder.getState() == 0){//出库
+                income = income + myOrder.getTotalPrice();
+            }else{
+                out = out + myOrder.getTotalCost();
+            }
+        }
+
+        if (out != 0){
+            tvTotalOut.setVisibility(View.VISIBLE);
+            tvTotalOut.setText("总支出：￥" + out);
+        }else{
+            tvTotalOut.setVisibility(View.GONE);
+        }
+
+        if (income != 0){
+            tvTotaIncome.setVisibility(View.VISIBLE);
+            tvTotaIncome.setText("总收入：￥"+ income);
+        }else{
+            tvTotaIncome.setVisibility(View.GONE);
+        }
     }
 
     private void initRv() {
@@ -281,7 +315,7 @@ public class RecordActivity extends BaseActivity implements SearchView.OnQueryTe
 
 
     private void initMenu() {
-        mSearchView.setQueryHint("客户/订单状态");
+        mSearchView.setQueryHint("客户");
 //        mSearchView.setMaxWidth(400);
         mSearchView.setOnQueryTextListener(this);
 
@@ -292,6 +326,10 @@ public class RecordActivity extends BaseActivity implements SearchView.OnQueryTe
         if (item.getItemId() == R.id.filter) {
             Intent intent = new Intent(this, OrderFilterActivity.class);
             startActivityForResult(intent,REQUEST_CODE);
+
+            if (stl.getCurrentTab() != 0){
+                stl.setCurrentTab(0);
+            }
         }
         return super.onOptionsItemSelected(item);
 
@@ -300,6 +338,31 @@ public class RecordActivity extends BaseActivity implements SearchView.OnQueryTe
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+
+        if (stl.getCurrentTab() != 0){
+            stl.setCurrentTab(0);
+        }
+        List<MyOrder> myOrders;
+        //查找客户
+        if (!TextUtils.isEmpty(query)){
+            myOrders = LitePal.where("customername like ?", "%"+query+"%").find(MyOrder.class);
+        }else{
+            myOrders = LitePal.findAll(MyOrder.class);
+        }
+
+//
+//        //查找订单状态
+//        if (myOrders== null || myOrders.isEmpty()){
+//            myOrders =   LitePal.where("orderstate like ?","%"+query+"%").find(MyOrder.class);
+//        }
+        if (myOrders!= null){
+            orderList.clear();
+            orderList.addAll(myOrders);
+            notifyData();
+        }
+
+        statistics();
+
         return false;
     }
 
@@ -312,7 +375,7 @@ public class RecordActivity extends BaseActivity implements SearchView.OnQueryTe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE && requestCode == RESQUEST_CODE){
+        if (requestCode == REQUEST_CODE && resultCode == RESQUEST_CODE){
             Bundle bundle = data.getExtras();
             if (bundle != null){
 
@@ -326,13 +389,13 @@ public class RecordActivity extends BaseActivity implements SearchView.OnQueryTe
 
                 StringBuilder sql = new StringBuilder("1=1 ");
                 List<String> conditions = new ArrayList<>();
-
+//                conditions.add("");
                 if(type!= 0){
                     sql.append("and state=? ");
                     conditions.add(String.valueOf(type-1));
                 }
 
-                if (TextUtils.isEmpty(customer)){
+            if (!TextUtils.isEmpty(customer)){
                     sql.append("and customername=? ");
                     conditions.add(customer);
                 }
@@ -352,13 +415,26 @@ public class RecordActivity extends BaseActivity implements SearchView.OnQueryTe
                     conditions.add(String.valueOf(type-1));
                 }
 
-                conditions.set(0, sql.toString());
-                String[] conditionArray = (String[]) conditions.toArray();
+//                conditions.set(0, sql.toString());
+//                String[] conditionArray = (String[]) conditions.toArray();
+//                String[] conditionArray = new String[conditions.size()];
+
+                String[] conditionArray = new String[conditions.size()+1];
+                conditionArray[0] = sql.toString();
+                Log.i(TAG, "onActivityResult: "+ conditionArray[0]);
+                for (int i = 1; i < conditions.size()+1; i++) {
+                    conditionArray[i] = conditions.get(i-1);
+                    Log.i(TAG, "onActivityResult: "+ conditionArray[i]);
+                }
+
+//                conditions.toArray(conditionArray);
 
                 List<MyOrder> myOrders = LitePal.where(conditionArray).find(MyOrder.class);
                 orderList.clear();
                 orderList.addAll(myOrders);
                 notifyData();
+
+                statistics();
 
             }
 

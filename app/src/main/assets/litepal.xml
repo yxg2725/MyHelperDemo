@@ -12,5 +12,6 @@
         <mapping class = "com.example.myhelper.entity.MyOrder"/>
 
     </list>
+    <storage value="external" />
 
 </litepal>
